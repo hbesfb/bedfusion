@@ -1,2 +1,2 @@
 # BedFusion
-Another tool for sorting and merging bedfiles
+Another tool for sorting and merging bed files
