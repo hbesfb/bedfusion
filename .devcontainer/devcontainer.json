@@ -2,8 +2,24 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/go
 {
 	"name": "Go",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/go:dev-1.23-bookworm",
+	"build": {
+		"dockerfile": "DockerfileDev",
+		"args": {
+			"USERNAME": "${localEnv:USER}",
+			"USER_UID": "${localEnv:UID}",
+			"USER_GID": "${localEnv:UID}",
+			"MAIL": "${localEnv:MAIL}",
+			"FULLNAME": "${localEnv:FULLNAME}"
+		}
+	},
+	"initializeCommand": "touch .env",
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"--env-file",
+		"${localWorkspaceFolder}/.env"
+	],
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -54,6 +70,6 @@
 		"http_proxy": "${localEnv:HTTP_PROXY}",
 		"https_proxy": "${localEnv:HTTP_PROXY}"
 	},
-	"postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
-	"remoteUser": "root",
+	"postCreateCommand": ".devcontainer/postCreateCommand.sh",
+	"remoteUser": "${localEnv:USER}",
 }
