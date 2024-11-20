@@ -1,0 +1,17 @@
+name: Docker tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  docker-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
