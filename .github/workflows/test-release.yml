@@ -1,9 +1,8 @@
-name: Goreleaser Release
+name: Goreleaser Test Release
 
 on:
   push:
-    tags:
-      - "*"
+  pull_request:
 
 permissions:
   contents: write
@@ -21,11 +20,11 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: Run GoReleaser
+      - name: Run GoReleaser Test
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean
+          args: release --skip=publish --skip=validate --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
