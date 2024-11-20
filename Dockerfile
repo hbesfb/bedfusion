@@ -5,3 +5,4 @@ RUN go build ./...
 
 FROM debian:bookworm
 COPY --from=builder /bedfusion/bedfusion /usr/local/bin/
+ENTRYPOINT ["bedfusion"]
