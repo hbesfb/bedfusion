@@ -39,10 +39,24 @@ archives:
       - goos: windows
         format: zip
 
+dockers:
+  - image_templates:
+      - "ghcr.io/tinytyranid/{{ .ProjectName }}:{{ .Tag }}"
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--build-arg=FOO={{.Env.Bar}}"
+      - "--platform=linux/arm64"
+    skip_push: auto
+
 changelog:
   sort: asc
   filters:
     exclude:
+      - "^chore:"
       - "^docs:"
       - "^test:"
       - "^fafo:"
