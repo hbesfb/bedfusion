@@ -41,9 +41,11 @@ archives:
 
 dockers:
   - image_templates:
-      - "ghcr.io/hbesfb/{{ .ProjectName }}:{{ .Tag }}"
+      - "ghcr.io/hbesfb/bedfusion:{{ .Tag }}"
+      - "ghcr.io/hbesfb/bedfusion:latest"
     build_flag_templates:
       - "--pull"
+      - "--label=org.opencontainers.image.source=https://github.com/hbesfb/bedfusion"
       - "--label=org.opencontainers.image.created={{ .Date }}"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
