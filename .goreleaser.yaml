@@ -41,7 +41,7 @@ archives:
 
 dockers:
   - image_templates:
-      - "ghcr.io/tinytyranid/{{ .ProjectName }}:{{ .Tag }}"
+      - "ghcr.io/hbesfb/{{ .ProjectName }}:{{ .Tag }}"
     build_flag_templates:
       - "--pull"
       - "--label=org.opencontainers.image.created={{ .Date }}"
