@@ -1,4 +1,4 @@
-module github.com/tinytyranid/bedfusion
+module github.com/hbesfb/bedfusion
 
 go 1.23.3
 
