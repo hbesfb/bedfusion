@@ -56,7 +56,6 @@
 				"golang.Go",
 				"exiasr.hadolint",
 				"kahole.magit",
-				"gitlab.gitlab-workflow",
 				"redhat.vscode-yaml",
 				"IBM.output-colorizer",
 				"reageyao.biosyntax"
