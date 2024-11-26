@@ -1,0 +1,74 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+	"name": "Go",
+	"build": {
+		"dockerfile": "DockerfileDev",
+		"args": {
+			"USERNAME": "${localEnv:USER}",
+			"USER_UID": "${localEnv:UID}",
+			"USER_GID": "${localEnv:UID}",
+			"MAIL": "${localEnv:MAIL}",
+			"FULLNAME": "${localEnv:FULLNAME}"
+		}
+	},
+	"initializeCommand": "touch .env",
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"--env-file",
+		"${localWorkspaceFolder}/.env"
+	],
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "go version",
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"go.toolsManagement.checkForUpdates": "local",
+				"go.useLanguageServer": true,
+				"files.eol": "\n",
+				"editor.formatOnSave": true,
+				"go.testTimeout": "10s",
+				"go.coverOnSingleTest": true,
+				"go.coverOnSingleTestFile": true,
+				"go.coverOnTestPackage": true,
+				"go.lintTool": "golangci-lint",
+				"go.lintOnSave": "package",
+				"[go]": {
+					"editor.codeActionsOnSave": {
+						"source.organizeImports": true
+					}
+				},
+				"gopls": {
+					"usePlaceholders": false,
+					"staticcheck": true
+				}
+			},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"golang.Go",
+				"exiasr.hadolint",
+				"kahole.magit",
+				"redhat.vscode-yaml",
+				"IBM.output-colorizer",
+				"reageyao.biosyntax"
+			]
+		}
+	},
+	// Ensure that those huddled behind a proxy is able to use it
+	"containerEnv": {
+		"HTTP_PROXY": "${localEnv:HTTP_PROXY}",
+		"HTTPS_PROXY": "${localEnv:HTTP_PROXY}",
+		"http_proxy": "${localEnv:HTTP_PROXY}",
+		"https_proxy": "${localEnv:HTTP_PROXY}"
+	},
+	"postCreateCommand": ".devcontainer/postCreateCommand.sh",
+	"remoteUser": "${localEnv:USER}",
+}
