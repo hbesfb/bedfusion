@@ -4,11 +4,13 @@ import (
 	"github.com/alecthomas/kong"
 
 	kongyaml "github.com/alecthomas/kong-yaml"
+
+	"github.com/hbesfb/bedfusion/internal/bed"
 )
 
 type session struct {
 	ConfigFile kong.ConfigFlag `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
-	InputFile  string          `env:"INPUT_FILE" required:"" short:"i" help:"The bed file to merge and sort"`
+	Bedfile    bed.Bedfile     `embed:""`
 	ctx        *kong.Context
 }
 
