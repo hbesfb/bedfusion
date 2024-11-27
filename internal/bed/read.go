@@ -10,27 +10,7 @@ import (
 	"strings"
 )
 
-type Bedfile struct {
-	Path      string   `env:"INPUT_FILE" required:"" short:"i" help:"The bed file"`
-	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (first column is 0)"`
-	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (first column is 0)"`
-	Header    []string `kong:"-"`
-	Lines     []Line   `kong:"-"`
-}
-
-type Line struct {
-	Chr    string
-	Start  int
-	Stop   int
-	Strand string
-	Feat   string
-	Full   []string
-}
-
-// TODO: Function for verifying that Feat and Strand cols are not overlapping
-// and that they are more than 2
-
-// Opening and reading the
+// Opening and reading the bed file
 func (bf *Bedfile) Read() error {
 	file, err := os.Open(bf.Path)
 	if err != nil {
@@ -44,12 +24,6 @@ func (bf *Bedfile) Read() error {
 func (bf *Bedfile) read(file io.Reader) error {
 	var err error
 	var expectedNrOfCols int
-
-	const (
-		chrIdx   = 0
-		startIdx = 1
-		stopIdx  = 2
-	)
 
 	minNrCols := 3
 	headerPattern := regexp.MustCompile(`^(browser|track|#)`)

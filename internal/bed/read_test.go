@@ -287,7 +287,6 @@ func TestRead(t *testing.T) {
 			shouldFail: true,
 		},
 	}
-
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
@@ -303,5 +302,4 @@ func TestRead(t *testing.T) {
 			}
 		})
 	}
-
 }
