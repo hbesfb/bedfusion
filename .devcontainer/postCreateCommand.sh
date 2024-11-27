@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo -E apt update && \
-    apt -y install --no-install-recommends --allow-downgrades \
+sudo -E apt update
+sudo -E apt -y install --no-install-recommends --allow-downgrades \
     fish
 
 go install -v github.com/davidrjenni/reftools/cmd/fillstruct@latest
