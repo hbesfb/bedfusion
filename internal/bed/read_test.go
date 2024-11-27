@@ -1,7 +1,7 @@
 package bed
 
 import (
-	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/go-test/deep"
@@ -12,7 +12,7 @@ func TestRead(t *testing.T) {
 	type testCase struct {
 		testing        string
 		bed            Bedfile
-		bedFileContent []byte
+		bedFileContent string
 		expectedBed    Bedfile
 		shouldFail     bool
 	}
@@ -22,12 +22,10 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
 			expectedBed: Bedfile{
 				Path: "test.bed",
 				Lines: []Line{
@@ -55,15 +53,13 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"browser something\n" +
-					"track something\n" +
-					"#something\n" +
-					"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "browser something\n" +
+				"track something\n" +
+				"#something\n" +
+				"1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
 			expectedBed: Bedfile{
 				Path: "test.bed",
 				Header: []string{
@@ -98,12 +94,10 @@ func TestRead(t *testing.T) {
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
-			bedFileContent: []byte(
-				"1\t10\t100\t-1\tA\n" +
-					"2\t20\t200\t-1\tB\n" +
-					"3\t30\t300\t1\tC\n" +
-					"4\t40\t400\t1\tD\n",
-			),
+			bedFileContent: "1\t10\t100\t-1\tA\n" +
+				"2\t20\t200\t-1\tB\n" +
+				"3\t30\t300\t1\tC\n" +
+				"4\t40\t400\t1\tD\n",
 			expectedBed: Bedfile{
 				Path:      "test.bed",
 				StrandCol: 4 - 1,
@@ -139,15 +133,13 @@ func TestRead(t *testing.T) {
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 			},
-			bedFileContent: []byte(
-				"#a test header\n" +
-					"1\t860259\t879955\t1\tSAMD11\tENSG00000187634\n" +
-					"1\t948802\t949920\t1\tISG15\tENSG00000187608\n" +
-					"10\t124768494\t124773587\t1\tACADSB\tENSG00000196177\n" +
-					"10\t124782049\t124817827\t1\tACADSB\tENSG00000196177\n" +
-					"10\t126085871\t126107545\t-1\tOAT\tENSG00000065154\n" +
-					"X\t135067597\t135129423\t1\tSLC9A6\tENSG00000198689",
-			),
+			bedFileContent: "#a test header\n" +
+				"1\t860259\t879955\t1\tSAMD11\tENSG00000187634\n" +
+				"1\t948802\t949920\t1\tISG15\tENSG00000187608\n" +
+				"10\t124768494\t124773587\t1\tACADSB\tENSG00000196177\n" +
+				"10\t124782049\t124817827\t1\tACADSB\tENSG00000196177\n" +
+				"10\t126085871\t126107545\t-1\tOAT\tENSG00000065154\n" +
+				"X\t135067597\t135129423\t1\tSLC9A6\tENSG00000198689",
 			expectedBed: Bedfile{
 				Path:      "test.bed",
 				StrandCol: 4 - 1,
@@ -192,12 +184,10 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"10\t100\n" +
-					"20\t200\n" +
-					"30\t300\n" +
-					"40\t400\n",
-			),
+			bedFileContent: "10\t100\n" +
+				"20\t200\n" +
+				"30\t300\n" +
+				"40\t400\n",
 			shouldFail: true,
 		},
 		{
@@ -205,12 +195,10 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\t-1\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\t-1\n" +
+				"4\t40\t400\n",
 			shouldFail: true,
 		},
 		{
@@ -218,12 +206,10 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"1\tX\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "1\tX\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
 			shouldFail: true,
 		},
 		{
@@ -231,12 +217,10 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\n" +
-					"4\t40\tCD\n",
-			),
+			bedFileContent: "1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\tCD\n",
 			shouldFail: true,
 		},
 		{
@@ -244,13 +228,11 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"something\n" +
-					"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"3\t30\t300\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "something\n" +
+				"1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
 			shouldFail: true,
 		},
 		{
@@ -258,17 +240,15 @@ func TestRead(t *testing.T) {
 			bed: Bedfile{
 				Path: "test.bed",
 			},
-			bedFileContent: []byte(
-				"browser something\n" +
-					"track something\n" +
-					"#something\n" +
-					"1\t10\t100\n" +
-					"2\t20\t200\n" +
-					"track something\n" +
-					"#something\n" +
-					"3\t30\t300\n" +
-					"4\t40\t400\n",
-			),
+			bedFileContent: "browser something\n" +
+				"track something\n" +
+				"#something\n" +
+				"1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"track something\n" +
+				"#something\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
 			shouldFail: true,
 		},
 		{
@@ -278,12 +258,10 @@ func TestRead(t *testing.T) {
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
-			bedFileContent: []byte(
-				"1\t10\t100\t-1\tA\n" +
-					"2\t20\t200\t-1\tB\n" +
-					"3\t30\t300\t0\tC\n" +
-					"4\t40\t400\t1\tD\n",
-			),
+			bedFileContent: "1\t10\t100\t-1\tA\n" +
+				"2\t20\t200\t-1\tB\n" +
+				"3\t30\t300\t0\tC\n" +
+				"4\t40\t400\t1\tD\n",
 			shouldFail: true,
 		},
 	}
@@ -291,7 +269,7 @@ func TestRead(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			err := tc.bed.read(bytes.NewReader(tc.bedFileContent))
+			err := tc.bed.read(strings.NewReader(tc.bedFileContent))
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
 			}
