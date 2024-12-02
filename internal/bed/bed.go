@@ -46,7 +46,7 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	}
 	if bf.FeatCol != 0 {
 		if bf.FeatCol < stopIdx+1 {
-			return fmt.Errorf("strand column is less than 3: %d", bf.FeatCol)
+			return fmt.Errorf("strand column is at position less than 3: %d", bf.FeatCol)
 		}
 		bf.FeatCol--
 	}
