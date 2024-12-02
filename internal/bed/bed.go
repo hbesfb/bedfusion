@@ -51,5 +51,8 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		bf.FeatCol--
 	}
 	bf.Input = filepath.Clean(bf.Input)
+	if bf.Output != "" {
+		bf.Output = filepath.Clean(bf.Output)
+	}
 	return nil
 }

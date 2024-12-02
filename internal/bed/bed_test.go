@@ -23,7 +23,7 @@ func TestVerifyAndHandle(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			testing: "correct input, only path",
+			testing: "correct input, only input path",
 			bed: Bedfile{
 				Input: "/some/path/test.bed",
 			},
@@ -35,10 +35,12 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "correct input with strand col",
 			bed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 			},
 			expectedBed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 			},
 		},
@@ -46,10 +48,12 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "correct input with feat col",
 			bed: Bedfile{
 				Input:   "/some/path/test.bed",
+				Output:  "/some/output/path/output.bed",
 				FeatCol: 3,
 			},
 			expectedBed: Bedfile{
 				Input:   "/some/path/test.bed",
+				Output:  "/some/output/path/output.bed",
 				FeatCol: 2,
 			},
 		},
@@ -57,24 +61,28 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "correct input with both cols",
 			bed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   3,
 			},
 			expectedBed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 				FeatCol:   2,
 			},
 		},
 		{
-			testing: "unclean path",
+			testing: "unclean paths",
 			bed: Bedfile{
 				Input:     "/some/../path/test.bed",
+				Output:    "/some/./output/./path/./output.bed",
 				StrandCol: 4,
 				FeatCol:   3,
 			},
 			expectedBed: Bedfile{
 				Input:     "/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 				FeatCol:   2,
 			},
@@ -83,6 +91,7 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "strand col less than 3",
 			bed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 2,
 				FeatCol:   3,
 			},
@@ -92,6 +101,7 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "feat col less than 3",
 			bed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   2,
 			},
@@ -101,6 +111,7 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "overlapping strand and feat cols",
 			bed: Bedfile{
 				Input:     "/some/path/test.bed",
+				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   4,
 			},
