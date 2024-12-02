@@ -8,9 +8,10 @@ import (
 // Note that the first column is 1 when user sets column locations,
 // but that .VerifyAndHandle() will correct this to standard indexes
 type Bedfile struct {
-	Path      string   `env:"INPUT_FILE" required:"" short:"i" help:"The bed file"`
+	Input     string   `env:"INPUT_FILE" required:"" short:"i" help:"Bed file path"`
 	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (first column is 1)"`
 	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (first column is 1)"`
+	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path for the output file. If unset the output will be written to stdout"`
 	Header    []string `kong:"-"`
 	Lines     []Line   `kong:"-"`
 }
@@ -49,6 +50,6 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		}
 		bf.FeatCol--
 	}
-	bf.Path = filepath.Clean(bf.Path)
+	bf.Input = filepath.Clean(bf.Input)
 	return nil
 }

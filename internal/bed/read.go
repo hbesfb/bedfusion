@@ -12,7 +12,7 @@ import (
 
 // Opening and reading the bed file
 func (bf *Bedfile) Read() error {
-	file, err := os.Open(bf.Path)
+	file, err := os.Open(bf.Input)
 	if err != nil {
 		return err
 	}

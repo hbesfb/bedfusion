@@ -20,14 +20,14 @@ func TestRead(t *testing.T) {
 		{
 			testing: "simple bed file",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
 				"3\t30\t300\n" +
 				"4\t40\t400\n",
 			expectedBed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 				Lines: []Line{
 					{
 						Chr: "1", Start: 10, Stop: 100,
@@ -51,7 +51,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "simple bed file with header",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "browser something\n" +
 				"track something\n" +
@@ -61,7 +61,7 @@ func TestRead(t *testing.T) {
 				"3\t30\t300\n" +
 				"4\t40\t400\n",
 			expectedBed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 				Header: []string{
 					"browser something",
 					"track something",
@@ -90,7 +90,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "complex bed file with strand and feat",
 			bed: Bedfile{
-				Path:      "test.bed",
+				Input:     "test.bed",
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
@@ -99,7 +99,7 @@ func TestRead(t *testing.T) {
 				"3\t30\t300\t1\tC\n" +
 				"4\t40\t400\t1\tD\n",
 			expectedBed: Bedfile{
-				Path:      "test.bed",
+				Input:     "test.bed",
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 				Lines: []Line{
@@ -129,7 +129,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "complex bed file with strand and feat and header",
 			bed: Bedfile{
-				Path:      "test.bed",
+				Input:     "test.bed",
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 			},
@@ -141,7 +141,7 @@ func TestRead(t *testing.T) {
 				"10\t126085871\t126107545\t-1\tOAT\tENSG00000065154\n" +
 				"X\t135067597\t135129423\t1\tSLC9A6\tENSG00000198689",
 			expectedBed: Bedfile{
-				Path:      "test.bed",
+				Input:     "test.bed",
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 				Header:    []string{"#a test header"},
@@ -182,7 +182,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "missing column",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "10\t100\n" +
 				"20\t200\n" +
@@ -193,7 +193,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "changing column numbers",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
@@ -204,7 +204,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "start not a number",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "1\tX\t100\n" +
 				"2\t20\t200\n" +
@@ -215,7 +215,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "stop not a number",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
@@ -226,7 +226,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "unknown header",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "something\n" +
 				"1\t10\t100\n" +
@@ -238,7 +238,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "multi track file",
 			bed: Bedfile{
-				Path: "test.bed",
+				Input: "test.bed",
 			},
 			bedFileContent: "browser something\n" +
 				"track something\n" +
@@ -254,7 +254,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "strand in incorrect format",
 			bed: Bedfile{
-				Path:      "test.bed",
+				Input:     "test.bed",
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
