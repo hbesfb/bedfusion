@@ -115,7 +115,7 @@ func TestLexicographicSort(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			receivedLines := LexicographicSort(tc.lines)
+			receivedLines := lexicographicSort(tc.lines)
 			fmt.Printf("%+v", receivedLines)
 			if diff := deep.Equal(tc.expectedLines, receivedLines); diff != nil {
 				t.Error("expected VS received lines", diff)
