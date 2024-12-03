@@ -68,8 +68,9 @@ func (bf *Bedfile) read(file io.Reader) error {
 		if err != nil {
 			return fmt.Errorf("non-int stop position on line %d: %s", lineNr, l.Full[stopIdx])
 		}
-		// Verify strand and gene column info
+		// Set strand and feature column if selected
 		if bf.StrandCol > stopIdx {
+			// Verify strand column
 			l.Strand = l.Full[bf.StrandCol]
 			if !strandPattern.MatchString(l.Strand) {
 				return fmt.Errorf("unexpected strand format on line %d: %s", lineNr, l.Strand)
