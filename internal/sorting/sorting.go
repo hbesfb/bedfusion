@@ -14,13 +14,13 @@ import (
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Config struct {
-	SortingType string `env:"SORTING_TYPE" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
+	SortType string `env:"SORT_TYPE" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
 }
 
 // Global sorting function
 func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
 	var sortedLines []bed.Line
-	switch c.SortingType {
+	switch c.SortType {
 	case "lex":
 		sortedLines = lexicographicSort(lines)
 	case "nat":
@@ -28,7 +28,7 @@ func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
 	case "merge":
 		sortedLines = mergeSort(lines)
 	default:
-		return []bed.Line{}, fmt.Errorf("unknown sorting type %s", c.SortingType)
+		return []bed.Line{}, fmt.Errorf("unknown sorting type %s", c.SortType)
 	}
 	return sortedLines, nil
 }
