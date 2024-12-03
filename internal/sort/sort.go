@@ -3,6 +3,9 @@ package sort
 import (
 	"cmp"
 	"slices"
+	"strings"
+
+	"github.com/maruel/natural"
 
 	"github.com/hbesfb/bedfusion/internal/bed"
 )
@@ -13,11 +16,27 @@ import (
 func lexicographicSort(lines []bed.Line) []bed.Line {
 	slices.SortFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
-			cmp.Compare(a.Chr, b.Chr),
+			cmp.Compare(strings.ToLower(a.Chr), strings.ToLower(b.Chr)),
 			cmp.Compare(a.Start, b.Start),
 			cmp.Compare(a.Stop, b.Stop),
 			cmp.Compare(a.Strand, b.Strand),
-			cmp.Compare(a.Feat, b.Feat),
+			cmp.Compare(strings.ToLower(a.Feat), strings.ToLower(b.Feat)),
+		)
+	})
+	return lines
+}
+
+// Natural sorting
+// Sorting order: chr, start, stop, strand, feat
+// Chr sorting: 1 > 2 > 10 (Features are also sorted the same way)
+func naturalSort(lines []bed.Line) []bed.Line {
+	slices.SortFunc(lines, func(a, b bed.Line) int {
+		return cmp.Or(
+			naturalStringCompare(a.Chr, b.Chr),
+			cmp.Compare(a.Start, b.Start),
+			cmp.Compare(a.Stop, b.Stop),
+			cmp.Compare(a.Strand, b.Strand),
+			naturalStringCompare(a.Feat, b.Feat),
 		)
 	})
 	return lines
@@ -37,4 +56,21 @@ func mergeSort(lines []bed.Line) []bed.Line {
 		)
 	})
 	return lines
+}
+
+// Natural comparison of strings
+//
+//	-1 if a is less than b
+//	 0 if a equals b
+//	+1 if a is greater than b
+func naturalStringCompare(a, b string) int {
+	a = strings.ToLower(a)
+	b = strings.ToLower(b)
+	if a == b {
+		return 0
+	}
+	if natural.Less(a, b) {
+		return -1
+	}
+	return 1
 }
