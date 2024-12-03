@@ -6,11 +6,13 @@ import (
 	kongyaml "github.com/alecthomas/kong-yaml"
 
 	"github.com/hbesfb/bedfusion/internal/bed"
+	"github.com/hbesfb/bedfusion/internal/sorting"
 )
 
 type session struct {
 	ConfigFile kong.ConfigFlag `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
 	Bedfile    bed.Bedfile     `embed:""`
+	Sort       sorting.Config  `embed:""`
 	ctx        *kong.Context
 }
 

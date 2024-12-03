@@ -1,4 +1,4 @@
-package sort
+package sorting
 
 import (
 	"cmp"
@@ -12,8 +12,8 @@ import (
 
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
-type Bedfile struct {
-	SortingType string `env:"SORTING_TYPE" default:"lex" short:"s" help:"How to sort the bed files"`
+type Config struct {
+	SortingType string `env:"SORTING_TYPE" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr 1 > 10 > 2). nat = natural sorting (chr 1 > 2 > 10)"`
 }
 
 // Lexicographic sorting
