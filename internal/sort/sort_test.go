@@ -14,7 +14,26 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-var linesToSort = []bed.Line{
+var testChrSort = []bed.Line{
+	{
+		Chr: "chrX", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
+		Chr: "chr10", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
+		Chr: "chr2", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
+		Chr: "chr1", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+}
+
+var testFullSort = []bed.Line{
 	{
 		Chr: "2", Start: 12, Stop: 13,
 		Strand: "1", Feat: "C",
@@ -66,8 +85,30 @@ func TestLexicographicSort(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			testing: "linesToSort",
-			lines:   linesToSort,
+			testing: "chr sort",
+			lines:   testChrSort,
+			expectedLines: []bed.Line{
+				{
+					Chr: "chr1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chr10", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chr2", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chrX", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+			},
+		},
+		{
+			testing: "full sort",
+			lines:   testFullSort,
 			expectedLines: []bed.Line{
 				{
 					Chr: "1", Start: 8, Stop: 9,
@@ -133,8 +174,30 @@ func TestMergeSort(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			testing: "linesToSort",
-			lines:   linesToSort,
+			testing: "chr sort",
+			lines:   testChrSort,
+			expectedLines: []bed.Line{
+				{
+					Chr: "chr1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chr10", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chr2", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chrX", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+			},
+		},
+		{
+			testing: "full sort",
+			lines:   testFullSort,
 			expectedLines: []bed.Line{
 				{
 					Chr: "1", Start: 10, Stop: 11,

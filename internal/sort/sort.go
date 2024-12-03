@@ -9,6 +9,7 @@ import (
 
 // Lexicographic sorting
 // Sorting order: chr, start, stop, strand, feat
+// Chr sorting: 1 > 10 > 2
 func lexicographicSort(lines []bed.Line) []bed.Line {
 	slices.SortFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
@@ -24,6 +25,7 @@ func lexicographicSort(lines []bed.Line) []bed.Line {
 
 // Sorting used before merging
 // Sorting order: feat, chr, strand, start, stop
+// Chr sorting: 1 > 10 > 2
 func mergeSort(lines []bed.Line) []bed.Line {
 	slices.SortFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
