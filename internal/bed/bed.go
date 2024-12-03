@@ -10,8 +10,8 @@ import (
 type Bedfile struct {
 	Input     string   `env:"INPUT_FILE" required:"" short:"i" help:"Bed file path"`
 	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
-	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (first column is 1)"`
-	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (first column is 1)"`
+	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (1-based column index)"`
+	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (1-based column index)"`
 	Header    []string `kong:"-"`
 	Lines     []Line   `kong:"-"`
 }
