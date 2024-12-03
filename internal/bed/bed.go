@@ -8,7 +8,7 @@ import (
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Input     string   `env:"INPUT_FILE" required:"" short:"i" help:"Bed file path"`
+	Input     string   `arg:"" help:"Bed file path"`
 	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
 	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (1-based column index)"`
 	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (1-based column index)"`
