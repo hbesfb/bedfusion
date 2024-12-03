@@ -8,7 +8,7 @@ import (
 )
 
 // Lexicographic sorting, based on chromosome, start and stop positions
-func LexicographicSort(lines []bed.Line) []bed.Line {
+func lexicographicSort(lines []bed.Line) []bed.Line {
 	slices.SortFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
 			cmp.Compare(a.Chr, b.Chr),
