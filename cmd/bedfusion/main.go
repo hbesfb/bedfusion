@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/alecthomas/kong"
 
 	kongyaml "github.com/alecthomas/kong-yaml"
@@ -18,6 +21,7 @@ type session struct {
 
 func main() {
 	var s session
+	var err error
 	// Getting variables
 	s.ctx = kong.Parse(&s,
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
@@ -25,5 +29,23 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
+		kong.Vars{},
 	)
+	// Read bed file
+	if err := s.Bedfile.Read(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
+		s.ctx.Exit(1)
+	}
+	// TODO: Merge
+	// Sort
+	s.Bedfile.Lines, err = s.Sort.Sort(s.Bedfile.Lines)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
+		s.ctx.Exit(1)
+	}
+	// Write output
+	if err := s.Bedfile.Write(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)
+		s.ctx.Exit(1)
+	}
 }

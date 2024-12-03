@@ -2,6 +2,7 @@ package sorting
 
 import (
 	"cmp"
+	"fmt"
 	"slices"
 	"strings"
 
@@ -13,12 +14,28 @@ import (
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Config struct {
-	SortingType string `env:"SORTING_TYPE" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr 1 > 10 > 2). nat = natural sorting (chr 1 > 2 > 10)"`
+	SortingType string `env:"SORTING_TYPE" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
+}
+
+// Global sorting function
+func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
+	var sortedLines []bed.Line
+	switch c.SortingType {
+	case "lex":
+		sortedLines = lexicographicSort(lines)
+	case "nat":
+		sortedLines = naturalSort(lines)
+	case "merge":
+		sortedLines = mergeSort(lines)
+	default:
+		return []bed.Line{}, fmt.Errorf("unknown sorting type %s", c.SortingType)
+	}
+	return sortedLines, nil
 }
 
 // Lexicographic sorting
 // Sorting order: chr, start, stop, strand, feat
-// Chr sorting: 1 > 10 > 2
+// Chr sorting: 1 < 10 < 2
 func lexicographicSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
@@ -34,7 +51,7 @@ func lexicographicSort(lines []bed.Line) []bed.Line {
 
 // Natural sorting
 // Sorting order: chr, start, stop, strand, feat
-// Chr sorting: 1 > 2 > 10 (Features are also sorted the same way)
+// Chr sorting: 1 < 2 < 10 (Features are also sorted the same way)
 func naturalSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
@@ -50,7 +67,7 @@ func naturalSort(lines []bed.Line) []bed.Line {
 
 // Sorting used before merging
 // Sorting order: feat, chr, strand, start, stop
-// Chr sorting: 1 > 10 > 2
+// Chr sorting: 1 < 10 < 2
 func mergeSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
