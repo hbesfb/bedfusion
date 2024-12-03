@@ -86,7 +86,7 @@ func TestLexicographicSort(t *testing.T) {
 	testCases := []testCase{
 		{
 			testing: "chr sort",
-			lines:   testChrSort,
+			lines:   deepCopyBedLines(testChrSort),
 			expectedLines: []bed.Line{
 				{
 					Chr: "chr1", Start: 8, Stop: 9,
@@ -108,7 +108,7 @@ func TestLexicographicSort(t *testing.T) {
 		},
 		{
 			testing: "full sort",
-			lines:   testFullSort,
+			lines:   deepCopyBedLines(testFullSort),
 			expectedLines: []bed.Line{
 				{
 					Chr: "1", Start: 8, Stop: 9,
@@ -175,7 +175,7 @@ func TestMergeSort(t *testing.T) {
 	testCases := []testCase{
 		{
 			testing: "chr sort",
-			lines:   testChrSort,
+			lines:   deepCopyBedLines(testChrSort),
 			expectedLines: []bed.Line{
 				{
 					Chr: "chr1", Start: 8, Stop: 9,
@@ -197,7 +197,7 @@ func TestMergeSort(t *testing.T) {
 		},
 		{
 			testing: "full sort",
-			lines:   testFullSort,
+			lines:   deepCopyBedLines(testFullSort),
 			expectedLines: []bed.Line{
 				{
 					Chr: "1", Start: 10, Stop: 11,
@@ -252,4 +252,23 @@ func TestMergeSort(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Helper function to get deep copies of lines
+func deepCopyBedLines(lines []bed.Line) []bed.Line {
+	var copiedLines []bed.Line
+	for _, l := range lines {
+		fullLineCopy := make([]string, len(l.Full))
+		_ = copy(fullLineCopy, l.Full)
+		copiedLine := bed.Line{
+			Chr:    l.Chr,
+			Start:  l.Start,
+			Stop:   l.Stop,
+			Strand: l.Strand,
+			Feat:   l.Feat,
+			Full:   fullLineCopy,
+		}
+		copiedLines = append(copiedLines, copiedLine)
+	}
+	return copiedLines
 }
