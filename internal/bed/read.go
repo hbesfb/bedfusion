@@ -68,7 +68,7 @@ func (bf *Bedfile) read(file io.Reader) error {
 		if err != nil {
 			return fmt.Errorf("non-int stop position on line %d: %s", lineNr, l.Full[stopIdx])
 		}
-		// Set strand and feature column if selected
+		// Set strand and feature if selected
 		if bf.StrandCol > stopIdx {
 			l.Strand = l.Full[bf.StrandCol]
 			// Verify strand column
