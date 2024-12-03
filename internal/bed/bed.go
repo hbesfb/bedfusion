@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 )
 
-// Note that the first column is 1 when user sets column locations,
-// but that .VerifyAndHandle() will correct this to standard indexes
+// Note that the the user will give the columns with 1-based indexing,
+// but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
 	Input     string   `env:"INPUT_FILE" required:"" short:"i" help:"Bed file path"`
 	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
