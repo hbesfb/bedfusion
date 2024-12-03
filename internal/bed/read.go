@@ -70,8 +70,8 @@ func (bf *Bedfile) read(file io.Reader) error {
 		}
 		// Set strand and feature column if selected
 		if bf.StrandCol > stopIdx {
-			// Verify strand column
 			l.Strand = l.Full[bf.StrandCol]
+			// Verify strand column
 			if !strandPattern.MatchString(l.Strand) {
 				return fmt.Errorf("unexpected strand format on line %d: %s", lineNr, l.Strand)
 			}
