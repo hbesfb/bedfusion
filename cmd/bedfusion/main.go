@@ -31,6 +31,11 @@ func main() {
 		kong.UsageOnError(),
 		kong.Vars{},
 	)
+	// Verify and handle bed file input
+	if err := s.Bedfile.VerifyAndHandle(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
+		s.ctx.Exit(1)
+	}
 	// Read bed file
 	if err := s.Bedfile.Read(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
