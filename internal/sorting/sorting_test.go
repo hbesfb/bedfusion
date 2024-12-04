@@ -18,11 +18,15 @@ func TestMain(m *testing.M) {
 
 var testChrSort = []bed.Line{
 	{
+		Chr: "chr10", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
 		Chr: "chrX", Start: 8, Stop: 9,
 		Full: []string{"1", "8", "9"},
 	},
 	{
-		Chr: "HG385_PATCH", Start: 8, Stop: 9,
+		Chr: "HG987_PATCH", Start: 8, Stop: 9,
 		Full: []string{"1", "8", "9"},
 	},
 	{
@@ -34,7 +38,15 @@ var testChrSort = []bed.Line{
 		Full: []string{"1", "8", "9"},
 	},
 	{
+		Chr: "HG385_PATCH", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
 		Chr: "chr2", Start: 8, Stop: 9,
+		Full: []string{"1", "8", "9"},
+	},
+	{
+		Chr: "GL000226.1", Start: 8, Stop: 9,
 		Full: []string{"1", "8", "9"},
 	},
 	{
@@ -117,6 +129,10 @@ func TestLexicographicSort(t *testing.T) {
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "chr10", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "chr2", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
@@ -129,7 +145,15 @@ func TestLexicographicSort(t *testing.T) {
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "GL000226.1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "HG385_PATCH", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "HG987_PATCH", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
 			},
@@ -228,6 +252,10 @@ func TestNaturalSort(t *testing.T) {
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "chr10", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "chrX", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
@@ -236,7 +264,15 @@ func TestNaturalSort(t *testing.T) {
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "GL000226.1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "HG385_PATCH", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "HG987_PATCH", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
 			},
@@ -327,11 +363,23 @@ func TestMergeSort(t *testing.T) {
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "GL000226.1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "HG385_PATCH", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
 				{
+					Chr: "HG987_PATCH", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
 					Chr: "chr1", Start: 8, Stop: 9,
+					Full: []string{"1", "8", "9"},
+				},
+				{
+					Chr: "chr10", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
 				},
 				{
