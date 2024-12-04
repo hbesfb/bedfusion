@@ -68,6 +68,13 @@ func (bf *Bedfile) read(file io.Reader) error {
 		if err != nil {
 			return fmt.Errorf("non-int stop position on line %d: %s", lineNr, l.Full[stopIdx])
 		}
+		// Verify start and stop
+		if l.Start > l.Stop {
+			return fmt.Errorf("stop is greater than start on line %d: %d > %d\n", lineNr, l.Start, l.Stop)
+		}
+		if l.Start == l.Stop {
+			fmt.Fprintf(os.Stderr, "warning: start and stop is equal on line %d: %d == %d\n", lineNr, l.Start, l.Stop)
+		}
 		// Set strand and feature if selected
 		if bf.StrandCol > stopIdx {
 			l.Strand = l.Full[bf.StrandCol]
