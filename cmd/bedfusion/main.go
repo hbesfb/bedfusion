@@ -40,11 +40,10 @@ func main() {
 	}
 	// TODO: Merge
 	// Sort
-	// s.Bedfile.Lines, err = s.Sort.Sort(s.Bedfile.Lines)
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
-	// 	s.ctx.Exit(1)
-	// }
+	if err := s.Bedfile.Sort(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
+		s.ctx.Exit(1)
+	}
 	// Write output
 	if err := s.Bedfile.Write(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)

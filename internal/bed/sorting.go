@@ -10,19 +10,18 @@ import (
 )
 
 // Global sorting function
-func (bf Bedfile) Sort(lines []Line) ([]Line, error) {
-	var sortedLines []Line
+// Note: mergeSort() is missing from this list as it
+// is only intended for internal use
+func (bf *Bedfile) Sort() error {
 	switch bf.SortType {
 	case "lex":
-		sortedLines = lexicographicSort(bf.Lines)
+		bf.Lines = lexicographicSort(bf.Lines)
 	case "nat":
-		sortedLines = naturalSort(bf.Lines)
-	case "merge":
-		sortedLines = mergeSort(bf.Lines)
+		bf.Lines = naturalSort(bf.Lines)
 	default:
-		return []Line{}, fmt.Errorf("unknown sorting type %s", bf.SortType)
+		return fmt.Errorf("unknown sorting type %s", bf.SortType)
 	}
-	return sortedLines, nil
+	return nil
 }
 
 // Lexicographic sorting
