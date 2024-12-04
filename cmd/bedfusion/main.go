@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/alecthomas/kong"
 
 	kongyaml "github.com/alecthomas/kong-yaml"
@@ -23,5 +26,27 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
+		kong.Vars{},
 	)
+	// Verify and handle bed file input
+	if err := s.Bedfile.VerifyAndHandle(); err != nil {
+		fmt.Fprintf(os.Stderr, "error upon verification: %q\n", err)
+		s.ctx.Exit(1)
+	}
+	// Read bed file
+	if err := s.Bedfile.Read(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
+		s.ctx.Exit(1)
+	}
+	// TODO: Merge
+	// Sort
+	if err := s.Bedfile.Sort(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
+		s.ctx.Exit(1)
+	}
+	// Write output
+	if err := s.Bedfile.Write(); err != nil {
+		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)
+		s.ctx.Exit(1)
+	}
 }

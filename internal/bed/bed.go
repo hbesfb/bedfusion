@@ -5,13 +5,14 @@ import (
 	"path/filepath"
 )
 
-// Note that the first column is 1 when user sets column locations,
-// but that .VerifyAndHandle() will correct this to standard indexes
+// Note that the the user will give the columns with 1-based indexing,
+// but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Input     string   `env:"INPUT_FILE" required:"" short:"i" help:"Bed file path"`
+	Input     string   `arg:"" help:"Bed file path"`
 	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
-	StrandCol int      `env:"STRAND_COL" help:"The column containing the strand information (1-based column index)"`
-	FeatCol   int      `env:"FEAT_COL" help:"The column containing the feature information (1-based column index)"`
+	StrandCol int      `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index)"`
+	FeatCol   int      `env:"FEAT_COL" group:"input" help:"The column containing the feature information (1-based column index)"`
+	SortType  string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
 	Header    []string `kong:"-"`
 	Lines     []Line   `kong:"-"`
 }

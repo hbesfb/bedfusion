@@ -49,6 +49,37 @@ func TestRead(t *testing.T) {
 			},
 		},
 		{
+			testing: "simple bed file, equal start and stop",
+			bed: Bedfile{
+				Input: "test.bed",
+			},
+			bedFileContent: "1\t10\t100\n" +
+				"2\t200\t200\n" +
+				"3\t30\t300\n" +
+				"4\t40\t400\n",
+			expectedBed: Bedfile{
+				Input: "test.bed",
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Full: []string{"1", "10", "100"},
+					},
+					{
+						Chr: "2", Start: 200, Stop: 200,
+						Full: []string{"2", "200", "200"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Full: []string{"3", "30", "300"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Full: []string{"4", "40", "400"},
+					},
+				},
+			},
+		},
+		{
 			testing: "simple bed file with header",
 			bed: Bedfile{
 				Input: "test.bed",
@@ -178,6 +209,17 @@ func TestRead(t *testing.T) {
 					},
 				},
 			},
+		},
+		{
+			testing: "stop less than start",
+			bed: Bedfile{
+				Input: "test.bed",
+			},
+			bedFileContent: "1\t10\t100\n" +
+				"2\t20\t200\n" +
+				"3\t300\t30\n" +
+				"4\t40\t400\n",
+			shouldFail: true,
 		},
 		{
 			testing: "missing column",
