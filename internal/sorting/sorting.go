@@ -34,7 +34,7 @@ func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
 }
 
 // Lexicographic sorting
-// Sorting order: chr, start, stop, strand, feat
+// Sorting hierarchy: chr, start, stop, strand, feat
 // Chr sorting: 1 < 10 < 2
 func lexicographicSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
@@ -51,7 +51,7 @@ func lexicographicSort(lines []bed.Line) []bed.Line {
 
 // Natural sorting
 // Sorting order: chr, start, stop, strand, feat
-// Chr sorting: 1 < 2 < 10 (Features are also sorted the same way)
+// Chr hierarchy: 1 < 2 < 10 (Features are also sorted the same way)
 func naturalSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
 		return cmp.Or(
@@ -66,7 +66,7 @@ func naturalSort(lines []bed.Line) []bed.Line {
 }
 
 // Sorting used before merging
-// Sorting order: feat, chr, strand, start, stop
+// Sorting hierarchy: feat, chr, strand, start, stop
 // Chr sorting: 1 < 10 < 2
 func mergeSort(lines []bed.Line) []bed.Line {
 	slices.SortStableFunc(lines, func(a, b bed.Line) int {
