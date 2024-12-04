@@ -33,7 +33,7 @@ func main() {
 	)
 	// Verify and handle bed file input
 	if err := s.Bedfile.VerifyAndHandle(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
+		fmt.Fprintf(os.Stderr, "error upon verification: %q\n", err)
 		s.ctx.Exit(1)
 	}
 	// Read bed file
