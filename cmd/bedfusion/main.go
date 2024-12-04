@@ -9,19 +9,16 @@ import (
 	kongyaml "github.com/alecthomas/kong-yaml"
 
 	"github.com/hbesfb/bedfusion/internal/bed"
-	"github.com/hbesfb/bedfusion/internal/sorting"
 )
 
 type session struct {
 	ConfigFile kong.ConfigFlag `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
 	Bedfile    bed.Bedfile     `embed:""`
-	Sort       sorting.Config  `embed:""`
 	ctx        *kong.Context
 }
 
 func main() {
 	var s session
-	var err error
 	// Getting variables
 	s.ctx = kong.Parse(&s,
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
@@ -43,11 +40,11 @@ func main() {
 	}
 	// TODO: Merge
 	// Sort
-	s.Bedfile.Lines, err = s.Sort.Sort(s.Bedfile.Lines)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
-		s.ctx.Exit(1)
-	}
+	// s.Bedfile.Lines, err = s.Sort.Sort(s.Bedfile.Lines)
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
+	// 	s.ctx.Exit(1)
+	// }
 	// Write output
 	if err := s.Bedfile.Write(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)

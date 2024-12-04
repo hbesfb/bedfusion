@@ -1,22 +1,13 @@
-package sorting
+package bed
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/go-test/deep"
-
-	"github.com/hbesfb/bedfusion/internal/bed"
 )
 
-func TestMain(m *testing.M) {
-	// Compare unexported fields in structs
-	deep.CompareUnexportedFields = true
-	os.Exit(m.Run())
-}
-
-var testChrSort = []bed.Line{
+var testChrSort = []Line{
 	{
 		Chr: "chr10", Start: 8, Stop: 9,
 		Full: []string{"1", "8", "9"},
@@ -55,7 +46,7 @@ var testChrSort = []bed.Line{
 	},
 }
 
-var testFullSort = []bed.Line{
+var testFullSort = []Line{
 	{
 		Chr: "2", Start: 12, Stop: 13,
 		Strand: "1", Feat: "C",
@@ -112,14 +103,14 @@ func TestLexicographicSort(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing       string
-		lines         []bed.Line
-		expectedLines []bed.Line
+		lines         []Line
+		expectedLines []Line
 	}
 	testCases := []testCase{
 		{
 			testing: "chr sort",
-			lines:   deepCopyBedLines(testChrSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testChrSort),
+			expectedLines: []Line{
 				{
 					Chr: "chr1", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
@@ -160,8 +151,8 @@ func TestLexicographicSort(t *testing.T) {
 		},
 		{
 			testing: "full sort",
-			lines:   deepCopyBedLines(testFullSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testFullSort),
+			expectedLines: []Line{
 				{
 					Chr: "1", Start: 8, Stop: 9,
 					Strand: "-1", Feat: "B",
@@ -231,14 +222,14 @@ func TestNaturalSort(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing       string
-		lines         []bed.Line
-		expectedLines []bed.Line
+		lines         []Line
+		expectedLines []Line
 	}
 	testCases := []testCase{
 		{
 			testing: "chr sort",
-			lines:   deepCopyBedLines(testChrSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testChrSort),
+			expectedLines: []Line{
 				{
 					Chr: "chr1", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
@@ -279,8 +270,8 @@ func TestNaturalSort(t *testing.T) {
 		},
 		{
 			testing: "full sort",
-			lines:   deepCopyBedLines(testFullSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testFullSort),
+			expectedLines: []Line{
 				{
 					Chr: "1", Start: 8, Stop: 9,
 					Strand: "-1", Feat: "B",
@@ -350,14 +341,14 @@ func TestMergeSort(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing       string
-		lines         []bed.Line
-		expectedLines []bed.Line
+		lines         []Line
+		expectedLines []Line
 	}
 	testCases := []testCase{
 		{
 			testing: "chr sort",
-			lines:   deepCopyBedLines(testChrSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testChrSort),
+			expectedLines: []Line{
 				{
 					Chr: "GL000209.1", Start: 8, Stop: 9,
 					Full: []string{"1", "8", "9"},
@@ -398,8 +389,8 @@ func TestMergeSort(t *testing.T) {
 		},
 		{
 			testing: "full sort",
-			lines:   deepCopyBedLines(testFullSort),
-			expectedLines: []bed.Line{
+			lines:   deepCopyLines(testFullSort),
+			expectedLines: []Line{
 				{
 					Chr: "1", Start: 10, Stop: 11,
 					Strand: "-1", Feat: "A",
@@ -497,23 +488,4 @@ func TestNaturalStringCompare(t *testing.T) {
 			}
 		})
 	}
-}
-
-// Helper function to get deep copies of lines
-func deepCopyBedLines(lines []bed.Line) []bed.Line {
-	var copiedLines []bed.Line
-	for _, l := range lines {
-		fullLineCopy := make([]string, len(l.Full))
-		_ = copy(fullLineCopy, l.Full)
-		copiedLine := bed.Line{
-			Chr:    l.Chr,
-			Start:  l.Start,
-			Stop:   l.Stop,
-			Strand: l.Strand,
-			Feat:   l.Feat,
-			Full:   fullLineCopy,
-		}
-		copiedLines = append(copiedLines, copiedLine)
-	}
-	return copiedLines
 }

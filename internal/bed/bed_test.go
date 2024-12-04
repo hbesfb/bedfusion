@@ -134,3 +134,24 @@ func TestVerifyAndHandle(t *testing.T) {
 		})
 	}
 }
+
+// --- Test Helper Functions ---
+
+// To make deep copies of Lines
+func deepCopyLines(lines []Line) []Line {
+	var copiedLines []Line
+	for _, l := range lines {
+		fullLineCopy := make([]string, len(l.Full))
+		_ = copy(fullLineCopy, l.Full)
+		copiedLine := Line{
+			Chr:    l.Chr,
+			Start:  l.Start,
+			Stop:   l.Stop,
+			Strand: l.Strand,
+			Feat:   l.Feat,
+			Full:   fullLineCopy,
+		}
+		copiedLines = append(copiedLines, copiedLine)
+	}
+	return copiedLines
+}

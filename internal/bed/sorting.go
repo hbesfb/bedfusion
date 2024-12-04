@@ -1,4 +1,4 @@
-package sorting
+package bed
 
 import (
 	"cmp"
@@ -7,28 +7,20 @@ import (
 	"strings"
 
 	"github.com/maruel/natural"
-
-	"github.com/hbesfb/bedfusion/internal/bed"
 )
 
-// Note that the the user will give the columns with 1-based indexing,
-// but that we convert this to zero-based indexing in .VerifyAndHandle()
-type Config struct {
-	SortType string `env:"SORT_TYPE" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
-}
-
 // Global sorting function
-func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
-	var sortedLines []bed.Line
-	switch c.SortType {
+func (bf Bedfile) Sort(lines []Line) ([]Line, error) {
+	var sortedLines []Line
+	switch bf.SortType {
 	case "lex":
-		sortedLines = lexicographicSort(lines)
+		sortedLines = lexicographicSort(bf.Lines)
 	case "nat":
-		sortedLines = naturalSort(lines)
+		sortedLines = naturalSort(bf.Lines)
 	case "merge":
-		sortedLines = mergeSort(lines)
+		sortedLines = mergeSort(bf.Lines)
 	default:
-		return []bed.Line{}, fmt.Errorf("unknown sorting type %s", c.SortType)
+		return []Line{}, fmt.Errorf("unknown sorting type %s", bf.SortType)
 	}
 	return sortedLines, nil
 }
@@ -36,8 +28,8 @@ func (c Config) Sort(lines []bed.Line) ([]bed.Line, error) {
 // Lexicographic sorting
 // Sorting hierarchy: chr, start, stop, strand, feat
 // Chr sorting: 1 < 10 < 2
-func lexicographicSort(lines []bed.Line) []bed.Line {
-	slices.SortStableFunc(lines, func(a, b bed.Line) int {
+func lexicographicSort(lines []Line) []Line {
+	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
 			cmp.Compare(strings.ToLower(a.Chr), strings.ToLower(b.Chr)),
 			cmp.Compare(a.Start, b.Start),
@@ -52,8 +44,8 @@ func lexicographicSort(lines []bed.Line) []bed.Line {
 // Natural sorting
 // Sorting order: chr, start, stop, strand, feat
 // Chr hierarchy: 1 < 2 < 10 (Features are also sorted the same way)
-func naturalSort(lines []bed.Line) []bed.Line {
-	slices.SortStableFunc(lines, func(a, b bed.Line) int {
+func naturalSort(lines []Line) []Line {
+	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
 			naturalStringCompare(a.Chr, b.Chr),
 			cmp.Compare(a.Start, b.Start),
@@ -68,8 +60,8 @@ func naturalSort(lines []bed.Line) []bed.Line {
 // Sorting used before merging
 // Sorting hierarchy: feat, chr, strand, start, stop
 // Chr sorting: 1 < 10 < 2
-func mergeSort(lines []bed.Line) []bed.Line {
-	slices.SortStableFunc(lines, func(a, b bed.Line) int {
+func mergeSort(lines []Line) []Line {
+	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
 			cmp.Compare(a.Feat, b.Feat),
 			cmp.Compare(a.Chr, b.Chr),
