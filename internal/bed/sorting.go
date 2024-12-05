@@ -66,7 +66,7 @@ func naturalSort(lines []Line) []Line {
 func customChrSort(lines []Line, orderMap map[string]int) []Line {
 	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
-			stringSliceCompare(a.Chr, b.Chr, orderMap),
+			stringMapCompare(a.Chr, b.Chr, orderMap),
 			cmp.Compare(a.Start, b.Start),
 			cmp.Compare(a.Stop, b.Stop),
 			cmp.Compare(a.Strand, b.Strand),
@@ -109,16 +109,16 @@ func naturalStringCompare(a, b string) int {
 	return 1
 }
 
-// Compares string using a predefined order contained in a slice.
+// Compares string using a predefined order contained in a map
 //
-// Strings that are not in the slice with be ranked as greater
-// than the strings in the slice. If neither a or b are in the slice
+// Strings that are not in the map with be ranked as greater
+// than the strings in the map. If neither a or b are in the map
 // they will be compared using naturalStringCompare.
 //
 //	-1 if a is less than b
 //	 0 if a equals b
 //	+1 if a is greater than b
-func stringSliceCompare(a, b string, order map[string]int) int {
+func stringMapCompare(a, b string, order map[string]int) int {
 	a = strings.ToLower(a)
 	b = strings.ToLower(b)
 	if order[a] != 0 && order[b] != 0 {

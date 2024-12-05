@@ -658,7 +658,7 @@ func TestNaturalStringCompare(t *testing.T) {
 	}
 }
 
-func TestHumanChrCompare(t *testing.T) {
+func TestStringMapCompare(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		a              string
@@ -688,7 +688,7 @@ func TestHumanChrCompare(t *testing.T) {
 		description := fmt.Sprintf("%s vs %s", tc.a, tc.b)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			result := stringSliceCompare(tc.a, tc.b, chrOrderToMap(humanChrOrder))
+			result := stringMapCompare(tc.a, tc.b, chrOrderToMap(humanChrOrder))
 			if tc.expectedResult != result {
 				t.Errorf("expected %d got %d", tc.expectedResult, result)
 			}
