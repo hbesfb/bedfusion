@@ -12,7 +12,7 @@ type Bedfile struct {
 	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
 	StrandCol int      `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index)"`
 	FeatCol   int      `env:"FEAT_COL" group:"input" help:"The column containing the feature information (1-based column index)"`
-	SortType  string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
+	SortType  string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat,hum" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2 < MT < X), nat = natural sorting (chr: 1 < 2 < 10 < MT < X), hum = human sorting (chr: 1 < 2 < 10 < X < MT)"`
 	Header    []string `kong:"-"`
 	Lines     []Line   `kong:"-"`
 }
