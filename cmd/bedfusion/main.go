@@ -26,7 +26,6 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
-		kong.Vars{},
 	)
 	// Verify and handle bed file input
 	if err := s.Bedfile.VerifyAndHandle(); err != nil {

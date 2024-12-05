@@ -9,9 +9,6 @@ import (
 	"github.com/maruel/natural"
 )
 
-// Note that only lowercase is used in this slice
-var humanChrOrder = []string{"1", "chr1", "2", "chr2", "3", "chr3", "4", "chr4", "5", "chr5", "6", "chr6", "7", "chr7", "8", "chr8", "9", "chr9", "10", "chr10", "11", "chr11", "12", "chr12", "13", "chr13", "14", "chr14", "15", "chr15", "16", "chr16", "17", "chr17", "18", "chr18", "19", "chr19", "20", "chr20", "21", "chr21", "x", "chrx", "y", "chry", "mt", "chrmt"}
-
 // Global sorting function
 // Note: mergeSort() is missing from this list as it
 // is only intended for internal use
@@ -21,8 +18,8 @@ func (bf *Bedfile) Sort() error {
 		bf.Lines = lexicographicSort(bf.Lines)
 	case "nat":
 		bf.Lines = naturalSort(bf.Lines)
-	case "hum":
-		bf.Lines = humanSort(bf.Lines)
+	case "ccs":
+		bf.Lines = customChrSort(bf.Lines, bf.chrOrderMap)
 	default:
 		return fmt.Errorf("unknown sorting type %s", bf.SortType)
 	}
@@ -46,8 +43,8 @@ func lexicographicSort(lines []Line) []Line {
 }
 
 // Natural sorting
-// Sorting order: chr, start, stop, strand, feat
-// Chr hierarchy: 1 < 2 < 10 < MT < X
+// Sorting hierarchy: chr, start, stop, strand, feat
+// Chr sorting: 1 < 2 < 10 < MT < X
 func naturalSort(lines []Line) []Line {
 	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
@@ -61,13 +58,15 @@ func naturalSort(lines []Line) []Line {
 	return lines
 }
 
-// Human chr sorting
-// Sorting order: chr, start, stop, strand, feat
-// Chr hierarchy: 1 < 2 < 10 < X < MT
-func humanSort(lines []Line) []Line {
+// Custom chromosome sorting
+// Sorting hierarchy: chr, start, stop, strand, feat
+// Sorting chromosomes according to custom order map
+// chromosomes not in the map will be put on the bottom
+// of the lines in a natural sorting order
+func customChrSort(lines []Line, orderMap map[string]int) []Line {
 	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
-			stringSliceCompare(a.Chr, b.Chr, humanChrOrder),
+			stringSliceCompare(a.Chr, b.Chr, orderMap),
 			cmp.Compare(a.Start, b.Start),
 			cmp.Compare(a.Stop, b.Stop),
 			cmp.Compare(a.Strand, b.Strand),
@@ -119,32 +118,17 @@ func naturalStringCompare(a, b string) int {
 //	-1 if a is less than b
 //	 0 if a equals b
 //	+1 if a is greater than b
-func stringSliceCompare(a, b string, order []string) int {
+func stringSliceCompare(a, b string, order map[string]int) int {
 	a = strings.ToLower(a)
 	b = strings.ToLower(b)
-
-	aIdx := idxInSlice(order, a)
-	bIdx := idxInSlice(order, b)
-
-	if aIdx != -1 && bIdx != -1 {
-		return cmp.Compare(aIdx, bIdx)
+	if order[a] != 0 && order[b] != 0 {
+		return cmp.Compare(order[a], order[b])
 	}
-	if aIdx != -1 && bIdx == -1 {
+	if order[a] != 0 && order[b] == 0 {
 		return -1
 	}
-	if bIdx != -1 && aIdx == -1 {
+	if order[b] != 0 && order[a] == 0 {
 		return 1
 	}
 	return naturalStringCompare(a, b)
-}
-
-// Returns position if item is in slice and
-// -1 if item is not in slice
-func idxInSlice(slice []string, item string) int {
-	for j, i := range slice {
-		if item == i {
-			return j
-		}
-	}
-	return -1
 }

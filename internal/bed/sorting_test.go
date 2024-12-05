@@ -364,7 +364,7 @@ func TestNaturalSort(t *testing.T) {
 	}
 }
 
-func TestHumanSort(t *testing.T) {
+func TestCustomChrSort(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing       string
@@ -484,7 +484,7 @@ func TestHumanSort(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			receivedLines := humanSort(tc.lines)
+			receivedLines := customChrSort(tc.lines, chrOrderToMap(humanChrOrder))
 			if diff := deep.Equal(tc.expectedLines, receivedLines); diff != nil {
 				t.Error("expected VS received lines", diff)
 			}
@@ -688,41 +688,7 @@ func TestHumanChrCompare(t *testing.T) {
 		description := fmt.Sprintf("%s vs %s", tc.a, tc.b)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			result := stringSliceCompare(tc.a, tc.b, humanChrOrder)
-			if tc.expectedResult != result {
-				t.Errorf("expected %d got %d", tc.expectedResult, result)
-			}
-		})
-	}
-}
-func TestIdxInSlice(t *testing.T) {
-	t.Parallel()
-	type testCase struct {
-		testing        string
-		slice          []string
-		item           string
-		expectedResult int
-	}
-	testCases := []testCase{
-		{
-			testing:        "not in slice",
-			slice:          []string{"10", "11", "1000"},
-			item:           "1",
-			expectedResult: -1,
-		},
-		{
-			testing:        "in slice",
-			slice:          []string{"10", "11", "1000"},
-			item:           "11",
-			expectedResult: 1,
-		},
-	}
-	for _, tc := range testCases {
-		tc := tc
-		description := fmt.Sprintf("%s in %v", tc.item, tc.slice)
-		t.Run(description, func(t *testing.T) {
-			t.Parallel()
-			result := idxInSlice(tc.slice, tc.item)
+			result := stringSliceCompare(tc.a, tc.b, chrOrderToMap(humanChrOrder))
 			if tc.expectedResult != result {
 				t.Errorf("expected %d got %d", tc.expectedResult, result)
 			}
