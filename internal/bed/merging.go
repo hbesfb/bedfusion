@@ -7,7 +7,6 @@ import (
 )
 
 // MergeLines bed file
-// TODO: Add custom overlap
 func (bf *Bedfile) MergeLines() {
 	var merged Line
 	var mergedLines []Line
