@@ -47,7 +47,6 @@ func (bf *Bedfile) MergeLines() {
 	}
 	// Replace lines in Bedfile
 	bf.Lines = append(mergedLines, merged)
-	return
 }
 
 // Returns position if item is in slice and
