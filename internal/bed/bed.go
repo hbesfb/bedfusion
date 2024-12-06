@@ -8,14 +8,18 @@ import (
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Input     string   `arg:"" help:"Bed file path"`
-	Output    string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
-	StrandCol int      `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index)"`
-	FeatCol   int      `env:"FEAT_COL" group:"input" help:"The column containing the feature information (1-based column index)"`
-	SortType  string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
-	Merge     bool     `env:"MERGE" group:"merging" short:"m" cmd:"" negatable:"" help:"Merge bed file"`
-	Header    []string `kong:"-"`
-	Lines     []Line   `kong:"-"`
+	Input  string `arg:"" help:"Bed file path"`
+	Output string `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
+
+	SortType string `env:"SORT_TYPE" group:"sorting" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
+
+	Merge     bool `env:"MERGE" group:"merging" short:"m" cmd:"" negatable:"" help:"Merge bed file. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
+	StrandCol int  `env:"STRAND_COL" group:"merging" help:"The column containing the strand information (1-based column index). If this option is set regions on the same strand will not be merged"`
+	FeatCol   int  `env:"FEAT_COL" group:"merging" help:"The column containing the feature (e.g. gene id) information (1-based column index). If this option is set regions with the same feature will not be merged"`
+	Overlap   int  `env:"OVERLAP" group:"merging" help:"Overlap between regions to be merged. This can be a positive or negative number (e.g. if you don't want touching regions to bed merged set overlap to -1)"`
+
+	Header []string `kong:"-"`
+	Lines  []Line   `kong:"-"`
 }
 
 type Line struct {

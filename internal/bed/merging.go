@@ -17,7 +17,7 @@ func (bf *Bedfile) MergeLines() {
 			merged.Chr == l.Chr &&
 			merged.Strand == l.Strand &&
 			merged.Feat == l.Feat &&
-			merged.Stop >= l.Start-1 {
+			merged.Stop+bf.Overlap >= l.Start-1 {
 			// Set new stop if it is later than the
 			// merged stop
 			if l.Stop > merged.Stop {
