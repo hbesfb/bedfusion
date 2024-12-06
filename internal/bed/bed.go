@@ -13,6 +13,7 @@ type Bedfile struct {
 	StrandCol int      `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index)"`
 	FeatCol   int      `env:"FEAT_COL" group:"input" help:"The column containing the feature information (1-based column index)"`
 	SortType  string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat" default:"lex" short:"s" help:"How the bed files should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2), nat = natural sorting (chr: 1 < 2 < 10)"`
+	Merge     bool     `env:"MERGE" group:"merging" short:"m" cmd:"" negatable:"" help:"Merge bed file"`
 	Header    []string `kong:"-"`
 	Lines     []Line   `kong:"-"`
 }
