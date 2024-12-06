@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// MergeLines bed file
+// Merge lines in bed file
 func (bf *Bedfile) MergeLines() {
 	var merged Line
 	var mergedLines []Line
@@ -23,7 +23,7 @@ func (bf *Bedfile) MergeLines() {
 				merged.Stop = l.Stop
 				merged.Full[stopIdx] = strconv.Itoa(l.Stop)
 			}
-			// Join information in columns
+			// Join information in the optional columns
 			if len(l.Full) > stopIdx {
 				for idx, col := range l.Full[stopIdx+1:] {
 					mIdx := idx + stopIdx + 1
