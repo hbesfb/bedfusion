@@ -21,7 +21,7 @@ type Bedfile struct {
 	ChrOrder []string `env:"CHR_ORDER" group:"sorting" help:"Comma separated custom chromosome order, to be used with custom chromosome sorting (--sort-type=ccs). If none is provided human chromosome order will be used (1-21, X, Y, MT)"`
 
 	Merge   bool `env:"MERGE" group:"merging" short:"m" cmd:"" negatable:"" help:"Merge bed file. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
-	Overlap int  `env:"OVERLAP" group:"merging" help:"Overlap between regions to be merged. This can be a positive or negative number (e.g. if you don't want touching regions to bed merged set overlap to -1)"`
+	Overlap int  `env:"OVERLAP" group:"merging" default:0 help:"Overlap between regions to be merged. This can be a positive or negative number (e.g. if you don't want touching regions to bed merged set overlap to -1)"`
 
 	Header      []string `kong:"-"`
 	Lines       []Line   `kong:"-"`
