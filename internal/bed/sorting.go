@@ -18,6 +18,8 @@ func (bf *Bedfile) Sort() error {
 		bf.Lines = lexicographicSort(bf.Lines)
 	case "nat":
 		bf.Lines = naturalSort(bf.Lines)
+	case "ccs":
+		bf.Lines = customChrSort(bf.Lines, bf.chrOrderMap)
 	default:
 		return fmt.Errorf("unknown sorting type %s", bf.SortType)
 	}
@@ -26,7 +28,7 @@ func (bf *Bedfile) Sort() error {
 
 // Lexicographic sorting
 // Sorting hierarchy: chr, start, stop, strand, feat
-// Chr sorting: 1 < 10 < 2
+// Chr sorting: 1 < 10 < 2 < MT < X
 func lexicographicSort(lines []Line) []Line {
 	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
@@ -41,12 +43,30 @@ func lexicographicSort(lines []Line) []Line {
 }
 
 // Natural sorting
-// Sorting order: chr, start, stop, strand, feat
-// Chr hierarchy: 1 < 2 < 10 (Features are also sorted the same way)
+// Sorting hierarchy: chr, start, stop, strand, feat
+// Chr sorting: 1 < 2 < 10 < MT < X
 func naturalSort(lines []Line) []Line {
 	slices.SortStableFunc(lines, func(a, b Line) int {
 		return cmp.Or(
 			naturalStringCompare(a.Chr, b.Chr),
+			cmp.Compare(a.Start, b.Start),
+			cmp.Compare(a.Stop, b.Stop),
+			cmp.Compare(a.Strand, b.Strand),
+			naturalStringCompare(a.Feat, b.Feat),
+		)
+	})
+	return lines
+}
+
+// Custom chromosome sorting
+// Sorting hierarchy: chr, start, stop, strand, feat
+// Sorting chromosomes according to custom order map
+// chromosomes not in the map will be put on the bottom
+// of the lines in a natural sorting order
+func customChrSort(lines []Line, orderMap map[string]int) []Line {
+	slices.SortStableFunc(lines, func(a, b Line) int {
+		return cmp.Or(
+			stringMapCompare(a.Chr, b.Chr, orderMap),
 			cmp.Compare(a.Start, b.Start),
 			cmp.Compare(a.Stop, b.Stop),
 			cmp.Compare(a.Strand, b.Strand),
@@ -87,4 +107,28 @@ func naturalStringCompare(a, b string) int {
 		return -1
 	}
 	return 1
+}
+
+// Compares string using a predefined order contained in a map
+//
+// Strings that are not in the map with be ranked as greater
+// than the strings in the map. If neither a or b are in the map
+// they will be compared using naturalStringCompare.
+//
+//	-1 if a is less than b
+//	 0 if a equals b
+//	+1 if a is greater than b
+func stringMapCompare(a, b string, order map[string]int) int {
+	a = strings.ToLower(a)
+	b = strings.ToLower(b)
+	if order[a] != 0 && order[b] != 0 {
+		return cmp.Compare(order[a], order[b])
+	}
+	if order[a] != 0 && order[b] == 0 {
+		return -1
+	}
+	if order[b] != 0 && order[a] == 0 {
+		return 1
+	}
+	return naturalStringCompare(a, b)
 }
