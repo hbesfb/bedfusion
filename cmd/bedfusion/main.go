@@ -38,7 +38,7 @@ func main() {
 		s.ctx.Exit(1)
 	}
 	// Merge
-	if s.Bedfile.Merge {
+	if !s.Bedfile.NoMerge {
 		s.Bedfile.MergeLines()
 	}
 	// Sort
