@@ -24,7 +24,7 @@ func (bf *Bedfile) MergeLines() {
 				merged.Full[stopIdx] = strconv.Itoa(l.Stop)
 			}
 			// Join information in the optional columns
-			if len(l.Full) > stopIdx {
+			if len(l.Full) > stopIdx+1 {
 				for idx, col := range l.Full[stopIdx+1:] {
 					mIdx := idx + stopIdx + 1
 					if idxInSlice(strings.Split(merged.Full[mIdx], ","), col) == -1 {
