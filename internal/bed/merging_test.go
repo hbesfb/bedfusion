@@ -371,26 +371,26 @@ func TestMergeLines(t *testing.T) {
 	}
 }
 
-func TestIdxInSlice(t *testing.T) {
+func TestStringInSlice(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing        string
 		slice          []string
 		item           string
-		expectedResult int
+		expectedResult bool
 	}
 	testCases := []testCase{
 		{
 			testing:        "not in slice",
 			slice:          []string{"10", "11", "1000"},
 			item:           "1",
-			expectedResult: -1,
+			expectedResult: false,
 		},
 		{
 			testing:        "in slice",
 			slice:          []string{"10", "11", "1000"},
 			item:           "11",
-			expectedResult: 1,
+			expectedResult: true,
 		},
 	}
 	for _, tc := range testCases {
@@ -398,9 +398,9 @@ func TestIdxInSlice(t *testing.T) {
 		description := fmt.Sprintf("%s in %v", tc.item, tc.slice)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			result := idxInSlice(tc.slice, tc.item)
+			result := stringInSlice(tc.slice, tc.item)
 			if tc.expectedResult != result {
-				t.Errorf("expected %d got %d", tc.expectedResult, result)
+				t.Errorf("expected %t got %t", tc.expectedResult, result)
 			}
 		})
 	}

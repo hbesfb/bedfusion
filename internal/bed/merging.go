@@ -27,7 +27,7 @@ func (bf *Bedfile) MergeLines() {
 			if len(l.Full) > stopIdx+1 {
 				for idx, col := range l.Full[stopIdx+1:] {
 					mIdx := idx + stopIdx + 1
-					if idxInSlice(strings.Split(merged.Full[mIdx], ","), col) == -1 {
+					if !stringInSlice(strings.Split(merged.Full[mIdx], ","), col) {
 						merged.Full[mIdx] = fmt.Sprintf("%s,%s", merged.Full[mIdx], col)
 					}
 				}
@@ -49,13 +49,13 @@ func (bf *Bedfile) MergeLines() {
 	bf.Lines = append(mergedLines, merged)
 }
 
-// Returns position if item is in slice and
-// -1 if item is not in slice
-func idxInSlice(slice []string, item string) int {
-	for j, i := range slice {
+// Returns true or false depending on if the string
+// is in a slice
+func stringInSlice(slice []string, item string) bool {
+	for _, i := range slice {
 		if item == i {
-			return j
+			return true
 		}
 	}
-	return -1
+	return false
 }
