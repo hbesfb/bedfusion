@@ -37,7 +37,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
 		s.ctx.Exit(1)
 	}
-	// TODO: Merge
+	// Merge
+	if !s.Bedfile.NoMerge {
+		s.Bedfile.MergeLines()
+	}
 	// Sort
 	if err := s.Bedfile.Sort(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)

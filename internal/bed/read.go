@@ -77,6 +77,9 @@ func (bf *Bedfile) read(file io.Reader) error {
 		}
 		// Set strand and feature if selected
 		if bf.StrandCol > stopIdx {
+			if bf.StrandCol > len(l.Full)-1 {
+				return fmt.Errorf("given strand column, %d, is outside bed file (nr columns=%d)", bf.StrandCol+1, len(l.Full))
+			}
 			l.Strand = l.Full[bf.StrandCol]
 			// Verify strand format
 			if !strandPattern.MatchString(l.Strand) {
@@ -84,6 +87,9 @@ func (bf *Bedfile) read(file io.Reader) error {
 			}
 		}
 		if bf.FeatCol > stopIdx {
+			if bf.FeatCol > len(l.Full)-1 {
+				return fmt.Errorf("given strand column, %d, is outside bed file (nr columns=%d)", bf.FeatCol+1, len(l.Full))
+			}
 			l.Feat = l.Full[bf.FeatCol]
 		}
 		bf.Lines = append(bf.Lines, l)

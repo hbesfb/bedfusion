@@ -306,6 +306,32 @@ func TestRead(t *testing.T) {
 				"4\t40\t400\t1\tD\n",
 			shouldFail: true,
 		},
+		{
+			testing: "strand col outside bed",
+			bed: Bedfile{
+				Input:     "test.bed",
+				StrandCol: 6 - 1,
+				FeatCol:   5 - 1,
+			},
+			bedFileContent: "1\t10\t100\t-1\tA\n" +
+				"2\t20\t200\t-1\tB\n" +
+				"3\t30\t300\t1\tC\n" +
+				"4\t40\t400\t1\tD\n",
+			shouldFail: true,
+		},
+		{
+			testing: "feat col outside bed",
+			bed: Bedfile{
+				Input:     "test.bed",
+				StrandCol: 4 - 1,
+				FeatCol:   6 - 1,
+			},
+			bedFileContent: "1\t10\t100\t-1\tA\n" +
+				"2\t20\t200\t-1\tB\n" +
+				"3\t30\t300\t1\tC\n" +
+				"4\t40\t400\t1\tD\n",
+			shouldFail: true,
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
