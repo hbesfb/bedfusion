@@ -505,6 +505,41 @@ func TestRead(t *testing.T) {
 			shouldFail: true,
 		},
 		{
+			testing: "bed file already contains lines, second file contains different number of columns",
+			bed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+				},
+			},
+			bedFileContent: "5\t50\t500\n" +
+				"6\t60\t600\n" +
+				"7\t70\t700\n" +
+				"8\t80\t800\n",
+			shouldFail: true,
+		},
+		{
 			testing: "bed file already contains lines and header, second file also contains header",
 			bed: Bedfile{
 				Inputs:    []string{"test.bed"},
