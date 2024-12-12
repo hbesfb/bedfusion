@@ -12,8 +12,8 @@ var humanChrOrder = []string{"1", "chr1", "2", "chr2", "3", "chr3", "4", "chr4",
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Input  string `arg:"" help:"Bed file path"`
-	Output string `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
+	Inputs []string `arg:"" help:"Bed file path(s)"`
+	Output string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
 
 	StrandCol int `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index). If this option is set regions on the same strand will not be merged"`
 	FeatCol   int `env:"FEAT_COL" group:"input" help:"The column containing the feature (e.g. gene id, transcript id etc.) information (1-based column index). If this option is set regions on the same feature will not be merged"`
@@ -45,7 +45,7 @@ const (
 	stopIdx  = 2
 )
 
-// Verifies the user input for Bedfile, adds a chrOrderMap, fixes paths
+// Verifies the user input for Bedfiles, adds a chrOrderMap, fixes paths
 // and subtracts 1 from cols to be able to use zero-based indexing
 func (bf *Bedfile) VerifyAndHandle() error {
 	if bf.StrandCol != 0 {
@@ -71,7 +71,10 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		}
 		bf.chrOrderMap = chrOrderToMap(bf.ChrOrder)
 	}
-	bf.Input = filepath.Clean(bf.Input)
+	// Clean input paths
+	for i, input := range bf.Inputs {
+		bf.Inputs[i] = filepath.Clean(input)
+	}
 	if bf.Output != "" {
 		bf.Output = filepath.Clean(bf.Output)
 	}
