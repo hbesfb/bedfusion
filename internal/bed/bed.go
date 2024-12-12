@@ -20,9 +20,9 @@ type Bedfile struct {
 
 	SortType    string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat,ccs" default:"lex" short:"s" help:"How the bed file should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2 < MT < X), nat = natural sorting (chr: 1 < 2 < 10 < MT < X), ccs = custom chromosome sorting (see --chr-order flag )"`
 	ChrOrder    []string `env:"CHR_ORDER" group:"sorting" help:"Comma separated custom chromosome order, to be used with custom chromosome sorting (--sort-type=ccs). Chromosomes not on the list will be sorted naturally after the ones in the list. If none is provided human chromosome order will be used (1-21, X, Y, MT)"`
-	Deduplicate bool     `env:"DEDUPLICATE" group:"sorting" cmd:"" default:"false" short:"d" help:"Remove duplicated lines when used together with --no-merge"`
+	Deduplicate bool     `env:"DEDUPLICATE" group:"sorting" cmd:"" short:"d" help:"Remove duplicated lines"`
 
-	NoMerge bool `env:"NO_MERGE" group:"merging,sorting" cmd:"" default:"false" help:"Do not merge bed file. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
+	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge bed file. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. This can be a positive or negative number (e.g. if you don't want touching regions to be merged set overlap to -1)"`
 
 	Header      []string `kong:"-"`
