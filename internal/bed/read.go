@@ -47,7 +47,7 @@ func (bf *Bedfile) read(file io.Reader) error {
 
 		lineText := scanner.Text()
 
-		// Handle header
+		// Handle headers
 		if headerPattern.MatchString(lineText) && len(bf.Lines) == 0 {
 			bf.Header = append(bf.Header, lineText)
 			continue
