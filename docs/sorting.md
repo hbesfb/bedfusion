@@ -1,7 +1,5 @@
 # Sorting
 
-
-
 Note that bed fusion merges by default. So for the sorting examples we will not merge the bed regions, by using the flag `--no-merge`, to highlight the differences between the sorting methods.
 
 Sorting is always done after merging, so the resulting output will be sorted in the preferred format regardless if the bed file is merged or not.

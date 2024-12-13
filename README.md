@@ -43,9 +43,9 @@ Contrary to [bedtools merge](https://bedtools.readthedocs.io/en/latest/content/t
 ## Examples
 
 - [sorting](./docs/sorting.md)
+- [merging](./docs/merging.md)
 
 TODO:
-- merging
 - track file support
 - using config files
 
