@@ -4,7 +4,7 @@ Note that bed fusion merges by default. So for the sorting examples we will not 
 
 Sorting is always done after merging, so the resulting output will be sorted in the preferred format regardless if the bed file is merged or not.
 
-Example bed file `sort-test.bed`:
+Example bed file `examples/sort-test.bed`:
 
 ``` text
 2	12	13	1	C
@@ -27,7 +27,7 @@ Lexicographic sorting is the default sorting method.
 Example:
 
 ``` shell
-> bedfusion sort-test.bed --no-merge
+> bedfusion examples/sort-test.bed --no-merge
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      1       A
@@ -42,7 +42,7 @@ Y       10      11      1       A
 ```
 
 ``` shell
-> bedfusion sort-test.bed --no-merge -s lex
+> bedfusion examples/sort-test.bed --no-merge -s lex
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      1       A
@@ -59,7 +59,7 @@ Y       10      11      1       A
 To also sort using strand and/or gene information we can set the flags `--strand-col` and/or `--feat-col`. If `--feat-col` is set it will also be sorted lexicographically In this example we will use gene as the `--feat-col`, but any optional column can be chosen:
 
 ``` shell
-> bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5
+> bedfusion examples/sort-test.bed --no-merge --strand-col=4 --feat-col=5
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      -1      B
@@ -78,7 +78,7 @@ Y       10      11      1       A
 Example: 
 
 ``` shell 
-> bedfusion sort-test.bed --no-merge -s nat
+> bedfusion examples/sort-test.bed --no-merge -s nat
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      1       A
@@ -95,7 +95,7 @@ Y       10      11      1       A
 Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column (in this example gene) will be sorted using natural sorting:
 
 ``` shell 
-> bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s nat
+> bedfusion examples/sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s nat
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      -1      B
@@ -116,7 +116,7 @@ Custom chromosome sorting lets you sort the chromosomes in any order that you wo
 By default it will use human chromosome sorting (1-21, X, Y, MT), for example:
 
 ``` shell
-> bedfusion sort-test.bed --no-merge -s ccs
+> bedfusion examples/sort-test.bed --no-merge -s ccs
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      1       A
@@ -133,7 +133,7 @@ GL000209.1      10      11      1       A
 Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column (in this example gene) will be sorted using natural sorting:
 
 ``` shell 
-> bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs
+> bedfusion examples/sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      -1      B
@@ -152,7 +152,7 @@ GL000209.1      10      11      1       A
 Adding the option custom chromosome sorting one can sort the chromosomes in any order that one would want with the flag `--chr-order`. Chromosomes not on the list will be sorted naturally after the ones in the list.
 
 ``` shell
-> bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs --chr-order=X,Y,10
+> bedfusion examples/sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs --chr-order=X,Y,10
 X       10      11      1       A
 Y       10      11      1       A
 10      12      13      1       D
@@ -172,11 +172,11 @@ Please note that the provided chromosome order is case insensitive.
 
 When choosing not to merge the bed regions (by using the flag `--no-merge`) one might still want to remove duplicates.
 
-Lets pretend that we copy the `sort-test.bed` file and call this copy `sort-test-copy.bed`, and provide both as input to BedFusion:
+Lets pretend that we copy the `examples/sort-test.bed` file and call this copy `examples/sort-test-copy.bed`, and provide both as input to BedFusion:
 
 Without the flag `--deduplicate/-d`:
 ``` shell
-> bedfusion sort-test.bed sort-test-copy.bed --no-merge
+> bedfusion examples/sort-test.bed examples/sort-test-copy.bed --no-merge
 1       8       9       -1      B
 1       8       9       -1      B
 1       10      11      -1      A
@@ -203,7 +203,7 @@ Y       10      11      1       A
 
 With the flag `--deduplicate/-d`:
 ``` shell
-> bedfusion sort-test.bed sort-test-copy.bed --no-merge -d
+> bedfusion examples/sort-test.bed examples/sort-test-copy.bed --no-merge -d
 1       8       9       -1      B
 1       10      11      -1      A
 1       10      11      1       A
