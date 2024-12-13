@@ -3,10 +3,10 @@
 BedFusion has limited track file support and will only handle track under the following conditions:
 
 1. Headers lines are only in the top of the file
-1. A header lines start with one of the following words or symbols:
-    1. "browser"
-    1. "track"
-    1. "#"
+1. Header lines have to start with one of the following words or symbols:
+    1. `browser`
+    1. `track`
+    1. `#`
 1. If more than one file is used as input only the first track file can contain header lines
 
 Example track file `track-test.bed` (example taken from [Genome Browser: Data File Formats - BED format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)):
