@@ -5,14 +5,15 @@ import (
 )
 
 // Remove duplicates
-// Requires the lines to have been sorted before use
 func (bf *Bedfile) DeduplicateLines() {
 	var deduplicatedLines []Line
-	for i, line := range bf.Lines {
-		if i != 0 && strings.Join(line.Full, ",") == strings.Join(bf.Lines[i-1].Full, ",") {
-			continue
+	seen := map[string]bool{}
+	for _, line := range bf.Lines {
+		joinedLine := strings.Join(line.Full, ",")
+		if !seen[joinedLine] {
+			seen[joinedLine] = true
+			deduplicatedLines = append(deduplicatedLines, line)
 		}
-		deduplicatedLines = append(deduplicatedLines, line)
 	}
 	bf.Lines = deduplicatedLines
 }

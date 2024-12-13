@@ -130,7 +130,6 @@ func TestDeduplicateLines(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			tc.bed.Lines = naturalSort(tc.bed.Lines)
 			tc.bed.DeduplicateLines()
 			if !tc.shouldFail {
 				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {

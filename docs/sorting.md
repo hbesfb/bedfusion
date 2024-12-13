@@ -203,11 +203,8 @@ Y       10      11      1       A
 
 With the flag `--deduplicate/-d`:
 ``` shell
-> bedfusion examples/sort-test.bed examples/sort-test-copy.bed --no-merge -d
+> bedfusion examples/sort-test.bed sort-test-copy.bed --no-merge -d 
 1       8       9       -1      B
-1       10      11      -1      A
-1       10      11      1       A
-1       10      11      -1      B
 1       10      11      -1      A
 1       10      11      1       A
 1       10      11      -1      B

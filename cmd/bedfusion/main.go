@@ -41,18 +41,15 @@ func main() {
 	if !s.Bedfile.NoMerge {
 		s.Bedfile.MergeLines()
 	}
+	// Deduplicate if chosen and we have not merged
+	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
+		s.Bedfile.DeduplicateLines()
+	}
 	// Sort
 	if err := s.Bedfile.Sort(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
 		s.ctx.Exit(1)
 	}
-	// Deduplicate if chosen and we have not merged
-	// Must be used after sort as it requires the lines to be sorted
-	// before use
-	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
-		s.Bedfile.DeduplicateLines()
-	}
-
 	// Write output
 	if err := s.Bedfile.Write(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)
