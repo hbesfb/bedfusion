@@ -12,7 +12,7 @@ var humanChrOrder = []string{"1", "chr1", "2", "chr2", "3", "chr3", "4", "chr4",
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Inputs []string `arg:"" help:"Bed file path(s)"`
+	Inputs []string `arg:"" help:"Bed file path(s). If more than one is provided the files will be joined as if they were one file"`
 	Output string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
 
 	StrandCol int `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index). If this option is set regions on the same strand will not be merged"`
@@ -22,7 +22,7 @@ type Bedfile struct {
 	ChrOrder    []string `env:"CHR_ORDER" group:"sorting" help:"Comma separated custom chromosome order, to be used with custom chromosome sorting (--sort-type=ccs). Chromosomes not on the list will be sorted naturally after the ones in the list. If none is provided human chromosome order will be used (1-21, X, Y, MT)"`
 	Deduplicate bool     `env:"DEDUPLICATE" group:"sorting" cmd:"" short:"d" help:"Remove duplicated lines"`
 
-	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge bed file. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
+	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge bed regions. Note that touching regions are merged (e.g. if two regions are on the same chr they will be merged if one ends at 5 and the other starts at 6)"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. This can be a positive or negative number (e.g. if you don't want touching regions to be merged set overlap to -1)"`
 
 	Header      []string `kong:"-"`
