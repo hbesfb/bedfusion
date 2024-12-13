@@ -69,9 +69,7 @@ Example bed file `examples/merge-test2.bed`:
 - [sorting](./docs/sorting.md)
 - [merging](./docs/merging.md)
 - [track files](./docs/track-files.md)
-
-TODO:
-- using config files
+- [using a configuration file](./docs/config-file.md)
 
 ## Flags and arguments 
 
