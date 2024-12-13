@@ -6,7 +6,7 @@ Sorting is always done after merging, so the resulting output will be sorted in 
 
 Example bed file `sort-test.bed`:
 
-```bed
+``` text
 2	12	13	1	C
 Y	10	11	1	A
 1	8	9	-1	B
@@ -26,7 +26,7 @@ Lexicographic sorting is the default sorting method.
 
 Example:
 
-```shell
+``` shell
 > bedfusion sort-test.bed --no-merge
 1       8       9       -1      B
 1       10      11      -1      A
@@ -41,7 +41,7 @@ X       10      11      1       A
 Y       10      11      1       A
 ```
 
-```shell
+``` shell
 > bedfusion sort-test.bed --no-merge -s lex
 1       8       9       -1      B
 1       10      11      -1      A
@@ -58,7 +58,7 @@ Y       10      11      1       A
 
 To also sort using strand and/or gene information we can set the flags `--strand-col` and/or `--feat-col`. If `--feat-col` is set it will also be sorted lexicographically In this example we will use gene as the `--feat-col`, but any optional column can be chosen:
 
-```shell
+``` shell
 > bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5
 1       8       9       -1      B
 1       10      11      -1      A
@@ -77,7 +77,7 @@ Y       10      11      1       A
 
 Example: 
 
-```shell 
+``` shell 
 > bedfusion sort-test.bed --no-merge -s nat
 1       8       9       -1      B
 1       10      11      -1      A
@@ -94,7 +94,7 @@ Y       10      11      1       A
 
 Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column (in this example gene) will be sorted using natural sorting:
 
-```shell 
+``` shell 
 > bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s nat
 1       8       9       -1      B
 1       10      11      -1      A
@@ -115,7 +115,7 @@ Custom chromosome sorting lets you sort the chromosomes in any order that you wo
 
 By default it will use human chromosome sorting (1-21, X, Y, MT), for example:
 
-```shell
+``` shell
 > bedfusion sort-test.bed --no-merge -s ccs
 1       8       9       -1      B
 1       10      11      -1      A
@@ -132,7 +132,7 @@ GL000209.1      10      11      1       A
 
 Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column (in this example gene) will be sorted using natural sorting:
 
-```shell 
+``` shell 
 > bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs
 1       8       9       -1      B
 1       10      11      -1      A
@@ -151,7 +151,7 @@ GL000209.1      10      11      1       A
 
 Adding the option custom chromosome sorting one can sort the chromosomes in any order that one would want with the flag `--chr-order`. Chromosomes not on the list will be sorted naturally after the ones in the list.
 
-```shell
+``` shell
 > bedfusion sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs --chr-order=X,Y,10
 X       10      11      1       A
 Y       10      11      1       A
@@ -175,7 +175,7 @@ When choosing not to merge the bed regions (by using the flag `--no-merge`) one 
 Lets pretend that we copy the `sort-test.bed` file and call this copy `sort-test-copy.bed`, and provide both as input to BedFusion:
 
 Without the flag `--deduplicate/-d`:
-```shell
+``` shell
 > bedfusion sort-test.bed sort-test-copy.bed --no-merge
 1       8       9       -1      B
 1       8       9       -1      B
@@ -202,7 +202,7 @@ Y       10      11      1       A
 ```
 
 With the flag `--deduplicate/-d`:
-```shell
+``` shell
 > bedfusion sort-test.bed sort-test-copy.bed --no-merge -d
 1       8       9       -1      B
 1       10      11      -1      A

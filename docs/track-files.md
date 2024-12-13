@@ -11,7 +11,7 @@ BedFusion has limited track file support and will only handle track under the fo
 
 Example track file `track-test.bed` (example taken from [Genome Browser: Data File Formats - BED format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)):
 
-```bed
+``` text
 browser position chr7:127471196-127495720
 browser hide all
 track name="ItemRGBDemo" description="Item RGB demonstration" visibility=2 itemRgb="On"
@@ -27,7 +27,7 @@ chr7	127480532	127481699	Neg4	0	-	127480532	127481699	0,0,255
 ```
 Example:
 
-```bed
+``` shell
 > bedfusion track-test.bed --strand-col=6
 browser position chr7:127471196-127495720
 browser hide all

@@ -19,7 +19,7 @@ When merging by default all touching and overlapping regions within the same chr
 
 Example:
 
-```shell
+``` text
 > bedfusion merge-test.bed 
 1       1       8       1,-1    X,Y
 1       20      30      1       X
@@ -32,7 +32,7 @@ When `--strand-col` is set regions on different strands and chromosomes will not
 
 Example:
 
-```shell
+``` shell
 > bedfusion merge-test.bed --strand-col=4
 1       1       8       1       X,Y
 1       5       8       -1      X
@@ -46,7 +46,7 @@ When `--feat-col` is set regions on different features (here we use the gene col
 
 Example:
 
-```shell
+``` shell
 > bedfusion merge-test.bed --feat-col=5
 1       1       8       1,-1    X
 1       5       8       1       Y
@@ -60,7 +60,7 @@ When both `--feat -col` and `--feat-col` is set regions on different features, s
 
 Example:
 
-```shell
+``` shell
 > bedfusion merge-test.bed --strand-col=4 --feat-col=5
 1       1       8       1       X
 1       5       8       -1      X
@@ -75,7 +75,7 @@ BedFusion merges touching regions by default (`--overlap=0`), but one can chose 
 
 For example if one would only want overlapping, but not touching regions to merge one can set `--overlap=-1`:
 
-```shell 
+``` shell 
 > bedfusion merge-test.bed --overlap=-1
 1       1       4       1       X
 1       5       8       1,-1    X,Y
@@ -85,7 +85,7 @@ For example if one would only want overlapping, but not touching regions to merg
 
 If one on the other hand would like regions further apart to be merged one can set the overlap to a higher number. By for example setting `--overlap=11` we get this result:
 
-```shell 
+``` shell 
 > bedfusion merge-test.bed --overlap=11
 1       1       30      1,-1    X,Y
 2       5       8       1       X
@@ -93,7 +93,7 @@ If one on the other hand would like regions further apart to be merged one can s
 
 Used together with `--strand-col` and `--feat-col`:
 
-```shell 
+``` shell 
 > bedfusion merge-test.bed --strand-col=4 --feat-col=5 --overlap=11
 1       1       30      1       X
 1       5       8       -1      X
@@ -107,7 +107,7 @@ If one would prefer not to merge the `--no-merge` flag can be used.
 
 Example:
 
-```shell
+``` shell
 > bedfusion merge-test.bed --no-merge
 1       1       4       1       X
 1       5       8       1       X
