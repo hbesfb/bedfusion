@@ -20,14 +20,14 @@ func TestRead(t *testing.T) {
 		{
 			testing: "simple bed file",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
 				"3\t30\t300\n" +
 				"4\t40\t400\n",
 			expectedBed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 				Lines: []Line{
 					{
 						Chr: "1", Start: 10, Stop: 100,
@@ -51,14 +51,14 @@ func TestRead(t *testing.T) {
 		{
 			testing: "simple bed file, equal start and stop",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t200\t200\n" +
 				"3\t30\t300\n" +
 				"4\t40\t400\n",
 			expectedBed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 				Lines: []Line{
 					{
 						Chr: "1", Start: 10, Stop: 100,
@@ -82,7 +82,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "simple bed file with header",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "browser something\n" +
 				"track something\n" +
@@ -92,7 +92,7 @@ func TestRead(t *testing.T) {
 				"3\t30\t300\n" +
 				"4\t40\t400\n",
 			expectedBed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 				Header: []string{
 					"browser something",
 					"track something",
@@ -121,7 +121,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "complex bed file with strand and feat",
 			bed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
@@ -130,7 +130,7 @@ func TestRead(t *testing.T) {
 				"3\t30\t300\t1\tC\n" +
 				"4\t40\t400\t1\tD\n",
 			expectedBed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 				Lines: []Line{
@@ -158,9 +158,181 @@ func TestRead(t *testing.T) {
 			},
 		},
 		{
+			testing: "bed file already contains lines",
+			bed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+				},
+			},
+			bedFileContent: "5\t50\t500\t-1\tE\n" +
+				"6\t60\t600\t-1\tF\n" +
+				"7\t70\t700\t1\tG\n" +
+				"8\t80\t800\t1\tH\n",
+			expectedBed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+					{
+						Chr: "5", Start: 50, Stop: 500,
+						Strand: "-1", Feat: "E",
+						Full: []string{"5", "50", "500", "-1", "E"},
+					},
+					{
+						Chr: "6", Start: 60, Stop: 600,
+						Strand: "-1", Feat: "F",
+						Full: []string{"6", "60", "600", "-1", "F"},
+					},
+					{
+						Chr: "7", Start: 70, Stop: 700,
+						Strand: "1", Feat: "G",
+						Full: []string{"7", "70", "700", "1", "G"},
+					},
+					{
+						Chr: "8", Start: 80, Stop: 800,
+						Strand: "1", Feat: "H",
+						Full: []string{"8", "80", "800", "1", "H"},
+					},
+				},
+			},
+		},
+		{
+			testing: "bed file already contains lines and header, second file does NOT contain header",
+			bed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Header: []string{
+					"browser something",
+					"track something",
+					"#something",
+				},
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+				},
+			},
+			bedFileContent: "5\t50\t500\t-1\tE\n" +
+				"6\t60\t600\t-1\tF\n" +
+				"7\t70\t700\t1\tG\n" +
+				"8\t80\t800\t1\tH\n",
+			expectedBed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Header: []string{
+					"browser something",
+					"track something",
+					"#something",
+				},
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+					{
+						Chr: "5", Start: 50, Stop: 500,
+						Strand: "-1", Feat: "E",
+						Full: []string{"5", "50", "500", "-1", "E"},
+					},
+					{
+						Chr: "6", Start: 60, Stop: 600,
+						Strand: "-1", Feat: "F",
+						Full: []string{"6", "60", "600", "-1", "F"},
+					},
+					{
+						Chr: "7", Start: 70, Stop: 700,
+						Strand: "1", Feat: "G",
+						Full: []string{"7", "70", "700", "1", "G"},
+					},
+					{
+						Chr: "8", Start: 80, Stop: 800,
+						Strand: "1", Feat: "H",
+						Full: []string{"8", "80", "800", "1", "H"},
+					},
+				},
+			},
+		},
+		{
 			testing: "complex bed file with strand and feat and header",
 			bed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 			},
@@ -172,7 +344,7 @@ func TestRead(t *testing.T) {
 				"10\t126085871\t126107545\t-1\tOAT\tENSG00000065154\n" +
 				"X\t135067597\t135129423\t1\tSLC9A6\tENSG00000198689",
 			expectedBed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 				Header:    []string{"#a test header"},
@@ -213,7 +385,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "stop less than start",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
@@ -224,7 +396,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "missing column",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "10\t100\n" +
 				"20\t200\n" +
@@ -235,7 +407,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "changing column numbers",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
@@ -246,7 +418,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "start not a number",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\tX\t100\n" +
 				"2\t20\t200\n" +
@@ -257,7 +429,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "stop not a number",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "1\t10\t100\n" +
 				"2\t20\t200\n" +
@@ -268,7 +440,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "unknown header",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "something\n" +
 				"1\t10\t100\n" +
@@ -280,7 +452,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "multi track file",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 			},
 			bedFileContent: "browser something\n" +
 				"track something\n" +
@@ -296,7 +468,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "strand in incorrect format",
 			bed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   5 - 1,
 			},
@@ -309,7 +481,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "strand col outside bed",
 			bed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 6 - 1,
 				FeatCol:   5 - 1,
 			},
@@ -322,7 +494,7 @@ func TestRead(t *testing.T) {
 		{
 			testing: "feat col outside bed",
 			bed: Bedfile{
-				Input:     "test.bed",
+				Inputs:    []string{"test.bed"},
 				StrandCol: 4 - 1,
 				FeatCol:   6 - 1,
 			},
@@ -330,6 +502,84 @@ func TestRead(t *testing.T) {
 				"2\t20\t200\t-1\tB\n" +
 				"3\t30\t300\t1\tC\n" +
 				"4\t40\t400\t1\tD\n",
+			shouldFail: true,
+		},
+		{
+			testing: "bed file already contains lines, second file contains different number of columns",
+			bed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+				},
+			},
+			bedFileContent: "5\t50\t500\n" +
+				"6\t60\t600\n" +
+				"7\t70\t700\n" +
+				"8\t80\t800\n",
+			shouldFail: true,
+		},
+		{
+			testing: "bed file already contains lines and header, second file also contains header",
+			bed: Bedfile{
+				Inputs:    []string{"test.bed"},
+				StrandCol: 4 - 1,
+				FeatCol:   5 - 1,
+				Header: []string{
+					"browser something",
+					"track something",
+					"#something",
+				},
+				Lines: []Line{
+					{
+						Chr: "1", Start: 10, Stop: 100,
+						Strand: "-1", Feat: "A",
+						Full: []string{"1", "10", "100", "-1", "A"},
+					},
+					{
+						Chr: "2", Start: 20, Stop: 200,
+						Strand: "-1", Feat: "B",
+						Full: []string{"2", "20", "200", "-1", "B"},
+					},
+					{
+						Chr: "3", Start: 30, Stop: 300,
+						Strand: "1", Feat: "C",
+						Full: []string{"3", "30", "300", "1", "C"},
+					},
+					{
+						Chr: "4", Start: 40, Stop: 400,
+						Strand: "1", Feat: "D",
+						Full: []string{"4", "40", "400", "1", "D"},
+					},
+				},
+			},
+			bedFileContent: "browser something\n" +
+				"track something\n" +
+				"#something\n" +
+				"5\t50\t500\t-1\tE\n" +
+				"6\t60\t600\t-1\tF\n" +
+				"7\t70\t700\t1\tG\n" +
+				"8\t80\t800\t1\tH\n",
 			shouldFail: true,
 		},
 	}

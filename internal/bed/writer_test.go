@@ -122,7 +122,7 @@ func TestToString(t *testing.T) {
 		{
 			testing: "bed file with headers",
 			bed: Bedfile{
-				Input: "test.bed",
+				Inputs: []string{"test.bed"},
 				Header: []string{
 					"browser something",
 					"track something",

@@ -25,21 +25,21 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "correct input, only input path",
 			bed: Bedfile{
-				Input: "/some/path/test.bed",
+				Inputs: []string{"/some/path/test.bed"},
 			},
 			expectedBed: Bedfile{
-				Input: "/some/path/test.bed",
+				Inputs: []string{"/some/path/test.bed"},
 			},
 		},
 		{
 			testing: "correct input with strand col",
 			bed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 			},
 			expectedBed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 			},
@@ -47,12 +47,12 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "correct input with feat col",
 			bed: Bedfile{
-				Input:   "/some/path/test.bed",
+				Inputs:  []string{"/some/path/test.bed"},
 				Output:  "/some/output/path/output.bed",
 				FeatCol: 3,
 			},
 			expectedBed: Bedfile{
-				Input:   "/some/path/test.bed",
+				Inputs:  []string{"/some/path/test.bed"},
 				Output:  "/some/output/path/output.bed",
 				FeatCol: 2,
 			},
@@ -60,13 +60,13 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "correct input with both cols",
 			bed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   3,
 			},
 			expectedBed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 				FeatCol:   2,
@@ -75,13 +75,13 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "unclean paths",
 			bed: Bedfile{
-				Input:     "/some/../path/test.bed",
+				Inputs:    []string{"/some/../path/test1.bed", "./some/../path/./test2.bed"},
 				Output:    "/some/./output/./path/./output.bed",
 				StrandCol: 4,
 				FeatCol:   3,
 			},
 			expectedBed: Bedfile{
-				Input:     "/path/test.bed",
+				Inputs:    []string{"/path/test1.bed", "path/test2.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 				FeatCol:   2,
@@ -90,11 +90,11 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "sortType is ccs, and chrOrder is empty",
 			bed: Bedfile{
-				Input:    "/some/path/test.bed",
+				Inputs:   []string{"/some/path/test.bed"},
 				SortType: "ccs",
 			},
 			expectedBed: Bedfile{
-				Input:       "/some/path/test.bed",
+				Inputs:      []string{"/some/path/test.bed"},
 				SortType:    "ccs",
 				ChrOrder:    humanChrOrder,
 				chrOrderMap: chrOrderToMap(humanChrOrder),
@@ -103,12 +103,12 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "sortType is ccs, and is set",
 			bed: Bedfile{
-				Input:    "/some/path/test.bed",
+				Inputs:   []string{"/some/path/test.bed"},
 				SortType: "ccs",
 				ChrOrder: []string{"4", "3", "2", "1"},
 			},
 			expectedBed: Bedfile{
-				Input:    "/some/path/test.bed",
+				Inputs:   []string{"/some/path/test.bed"},
 				SortType: "ccs",
 				ChrOrder: []string{"4", "3", "2", "1"},
 				chrOrderMap: map[string]int{
@@ -122,7 +122,7 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "strand col less than 3",
 			bed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 2,
 				FeatCol:   3,
@@ -132,7 +132,7 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "feat col less than 3",
 			bed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   2,
@@ -142,7 +142,7 @@ func TestVerifyAndHandle(t *testing.T) {
 		{
 			testing: "overlapping strand and feat cols",
 			bed: Bedfile{
-				Input:     "/some/path/test.bed",
+				Inputs:    []string{"/some/path/test.bed"},
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   4,

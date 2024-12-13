@@ -10,14 +10,19 @@ import (
 	"strings"
 )
 
-// Opening and reading the bed file
+// Opening and reading the bed files
 func (bf *Bedfile) Read() error {
-	file, err := os.Open(bf.Input)
-	if err != nil {
-		return err
+	for _, input := range bf.Inputs {
+		file, err := os.Open(input)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		if err := bf.read(file); err != nil {
+			return fmt.Errorf("can't read file %s: %q", input, err)
+		}
 	}
-	defer file.Close()
-	return bf.read(file)
+	return nil
 }
 
 // Reading the bed file
@@ -28,6 +33,11 @@ func (bf *Bedfile) read(file io.Reader) error {
 	minNrCols := 3
 	headerPattern := regexp.MustCompile(`^(browser|track|#)`)
 	strandPattern := regexp.MustCompile(`^(\.|\+|-|\+1|-1|1)$`)
+
+	// If there is already content in bf save the expectedNrOfCols
+	if len(bf.Lines) != 0 {
+		expectedNrOfCols = len(bf.Lines[0].Full)
+	}
 
 	lineNr := 0
 	scanner := bufio.NewScanner(file)
@@ -46,8 +56,8 @@ func (bf *Bedfile) read(file io.Reader) error {
 		// Split line
 		l.Full = strings.Split(lineText, "\t")
 
-		// For the first content line save the number of columns
-		if lineNr == len(bf.Header)+1 {
+		// For the first content line set the number of columns if it is empty
+		if lineNr == len(bf.Header)+1 && expectedNrOfCols == 0 {
 			expectedNrOfCols = len(l.Full)
 			if expectedNrOfCols < minNrCols {
 				return fmt.Errorf("less than 3 columns on line %d: %s", lineNr, lineText)
