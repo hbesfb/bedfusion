@@ -73,7 +73,7 @@ Example bed file `examples/merge-test2.bed`:
 
 ## Flags and arguments 
 
-BedFusion supports the use of selecting your options in three separate ways: As flags, in a configuration file or as environmental variables. If a combination of the three is used the reading priority order is as follows: 
+BedFusion supports three separate ways of configuration: flags, a configuration file or environmental variables. If a combination of the three is used the reading priority order is as follows: 
 
 1. flags 
 2. configuration file 

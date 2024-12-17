@@ -20,7 +20,7 @@ X	10	11	1	A
 MT	10	11	1	A
 ```
 
-## Lexicographic Sorting
+## Lexicographic Sorting (default)
 
 Lexicographic sorting is the default sorting method.
 
@@ -149,7 +149,7 @@ GL000209.1      10      11      1       A
 
 ### Custom Chromosome Order
 
-Adding the option custom chromosome sorting one can sort the chromosomes in any order that one would want with the flag `--chr-order`. Chromosomes not on the list will be sorted naturally after the ones in the list.
+Adding the option custom chromosome sorting, one can sort the chromosomes in any order that one would want with the flag `--chr-order`. Chromosomes not on the list will be sorted naturally after the ones in the list.
 
 ``` shell
 > bedfusion examples/sort-test.bed --no-merge --strand-col=4 --feat-col=5 -s ccs --chr-order=X,Y,10
