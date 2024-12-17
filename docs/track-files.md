@@ -2,7 +2,7 @@
 
 BedFusion has limited track file support and will only handle track under the following conditions:
 
-1. Headers lines are only in the top of the file
+1. Header lines are only in the top of the file
 1. Header lines have to start with one of the following words or symbols:
     1. `browser`
     1. `track`
