@@ -1,0 +1,6 @@
+strand-col: 4
+feat-col: 5
+sort-type: ccs
+chr-order: x,y,mt
+overlap: 10
+no-merge: false
