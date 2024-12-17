@@ -29,7 +29,7 @@ Example bed file `examples/merge-test.bed`:
 2       5       8       1       A
 ```
 
-Contrary to [bedtools merge](https://bedtools.readthedocs.io/en/latest/content/tools/merge.html), BedFusion merges touching regions (like the two first lines in the example bed file). If you prefer to only merge overlapping, and not touching, regions you can use the flag `--overlap -1`:
+Contrary to [bedtools merge](https://bedtools.readthedocs.io/en/latest/content/tools/merge.html), BedFusion merges touching regions (like the two first lines in the example bed file). If you prefer to only merge overlapping, and not touching, regions you can use the flag `--overlap=-1`:
 
 ``` shell
 > bedfusion examples/merge-test.bed --overlap=-1
