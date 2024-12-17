@@ -15,7 +15,7 @@ Example bed file `examples/merge-test.bed`:
 
 ## Default merging
 
-When merging by default all touching and overlapping regions within the same chromosome will be merged. Unique values in optional columns will be combined separated by , when merged.
+When merging by default all touching and overlapping regions within the same chromosome will be merged. Unique values in optional columns will be concatenated and comma-separated if merged.
 
 Example:
 
@@ -71,7 +71,7 @@ Example:
 
 ## Using overlap
 
-BedFusion merges touching regions by default (`--overlap=0`), but one can chose a custom overlap for regions one want to be merged.
+BedFusion merges touching regions by default (`--overlap=0`), but one can choose a custom overlap for regions one wants to be merged.
 
 For example if one would only want overlapping, but not touching regions to merge one can set `--overlap=-1`:
 
@@ -83,7 +83,7 @@ For example if one would only want overlapping, but not touching regions to merg
 2       5       8       1       X
 ```
 
-If one on the other hand would like regions further apart to be merged one can set the overlap to a higher number. By for example setting `--overlap=11` we get this result:
+If one on the other hand would like regions further apart to be merged one can set the overlap to a higher number. For example, by setting `--overlap=11` we get this result:
 
 ``` shell 
 > bedfusion examples/merge-test.bed --overlap=11
