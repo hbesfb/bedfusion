@@ -13,30 +13,30 @@ BedFusion will both sort (lexicographically) and merge regions by default.
 Example bed file `examples/merge-test.bed`:
 
 ``` text
-1	1	4	1	X
-1	5	8	1	X
-1	6	8	1	X
-1	5	8	-1	X
-2	5	8	1	X
-1	5	8	1	Y
-1	20	30	1	X
+1	1	4	1	A
+1	5	8	1	A
+1	6	8	1	A
+1	5	8	-1	A
+2	5	8	1	A
+1	5	8	1	B
+1	20	30	1	A
 ```
 
 ``` shell
 > bedfusion examples/merge-test.bed
-1       1       8       1,-1    X,Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       8       1,-1    A,B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 Contrary to [bedtools merge](https://bedtools.readthedocs.io/en/latest/content/tools/merge.html), BedFusion merges touching regions (like the two first lines in the example bed file). If you prefer to only merge overlapping, and not touching, regions you can use the flag `--overlap -1`:
 
 ``` shell
 > bedfusion examples/merge-test.bed --overlap=-1
-1       1       4       1       X
-1       5       8       1,-1    X,Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       4       1       A
+1       5       8       1,-1    A,B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 ### Using several bed files as input
@@ -46,22 +46,21 @@ Several bed files can be used as input as long as they contain same number of co
 Example bed file `examples/merge-test2.bed`:
 
 ``` text
-2	1	4	1	X
-2	5	8	1	X
-2	6	8	1	X
-2	5	8	-1	X
-1	5	8	1	X
-2	5	8	1	Y
-2	20	30	1	X
+2	1	4	1	A
+2	5	8	1	A
+2	6	8	1	A
+2	5	8	-1	A
+1	5	8	1	A
+2	5	8	1	B
+2	20	30	1	A
 ```
 
 ``` shell
 > bedfusion examples/merge-test.bed examples/merge-test2.bed
-1       1       8       1,-1    X,Y
-1       20      30      1       X
-2       1       8       1,-1    X,Y
-2       20      30      1       X
-
+1       1       8       1,-1    A,B
+1       20      30      1       A
+2       1       8       1,-1    A,B
+2       20      30      1       A
 ```
 
 ## Examples

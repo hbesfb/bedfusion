@@ -4,13 +4,13 @@ BedFusion merges and sorts by default. To highlight the differences between the 
 
 Example bed file `examples/merge-test.bed`:
 ```bed
-1       1       4       1       X
-1       5       8       1       X
-1       6       8       1       X
-1       5       8       -1      X
-2       5       8       1       X
-1       5       8       1       Y
-1       20      30      1       X
+1       1       4       1       A
+1       5       8       1       A
+1       6       8       1       A
+1       5       8       -1      A
+2       5       8       1       A
+1       5       8       1       B
+1       20      30      1       A
 ```
 
 ## Default merging
@@ -21,9 +21,9 @@ Example:
 
 ``` text
 > bedfusion examples/merge-test.bed 
-1       1       8       1,-1    X,Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       8       1,-1    A,B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 ## Merging with strand column set
@@ -34,10 +34,10 @@ Example:
 
 ``` shell
 > bedfusion examples/merge-test.bed --strand-col=4
-1       1       8       1       X,Y
-1       5       8       -1      X
-1       20      30      1       X
-2       5       8       1       X
+1       1       8       1       A,B
+1       5       8       -1      A
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 ## Merging with feature column set
@@ -48,10 +48,10 @@ Example:
 
 ``` shell
 > bedfusion examples/merge-test.bed --feat-col=5
-1       1       8       1,-1    X
-1       5       8       1       Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       8       1,-1    A
+1       5       8       1       B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 ## Merging with both strand and feature columns set
@@ -62,11 +62,11 @@ Example:
 
 ``` shell
 > bedfusion examples/merge-test.bed --strand-col=4 --feat-col=5
-1       1       8       1       X
-1       5       8       -1      X
-1       5       8       1       Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       8       1       A
+1       5       8       -1      A
+1       5       8       1       B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 ## Using overlap
@@ -77,28 +77,28 @@ For example if one would only want overlapping, but not touching regions to merg
 
 ``` shell 
 > bedfusion examples/merge-test.bed --overlap=-1
-1       1       4       1       X
-1       5       8       1,-1    X,Y
-1       20      30      1       X
-2       5       8       1       X
+1       1       4       1       A
+1       5       8       1,-1    A,B
+1       20      30      1       A
+2       5       8       1       A
 ```
 
 If one on the other hand would like regions further apart to be merged one can set the overlap to a higher number. For example, by setting `--overlap=11` we get this result:
 
 ``` shell 
 > bedfusion examples/merge-test.bed --overlap=11
-1       1       30      1,-1    X,Y
-2       5       8       1       X
+1       1       30      1,-1    A,B
+2       5       8       1       A
 ```
 
 Used together with `--strand-col` and `--feat-col`:
 
 ``` shell 
 > bedfusion examples/merge-test.bed --strand-col=4 --feat-col=5 --overlap=11
-1       1       30      1       X
-1       5       8       -1      X
-1       5       8       1       Y
-2       5       8       1       X
+1       1       30      1       A
+1       5       8       -1      A
+1       5       8       1       B
+2       5       8       1       A
 ```
 
 ## No Merge
@@ -109,11 +109,11 @@ Example:
 
 ``` shell
 > bedfusion examples/merge-test.bed --no-merge
-1       1       4       1       X
-1       5       8       1       X
-1       5       8       -1      X
-1       5       8       1       Y
-1       6       8       1       X
-1       20      30      1       X
-2       5       8       1       X
+1       1       4       1       A
+1       5       8       1       A
+1       5       8       -1      A
+1       5       8       1       B
+1       6       8       1       A
+1       20      30      1       A
+2       5       8       1       A
 ```
