@@ -25,6 +25,9 @@ type Bedfile struct {
 	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge regions"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
+	Fission   bool `env:"FISSION" group:"fission" cmd:"" short:"f" help:"Split regions into smaller regions"`
+	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:500 help:"Fission split size in bp. Must be > 0"`
+
 	Header      []string `kong:"-"`
 	Lines       []Line   `kong:"-"`
 	chrOrderMap map[string]int
@@ -78,6 +81,10 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	}
 	if bf.Output != "" {
 		bf.Output = filepath.Clean(bf.Output)
+	}
+	// Check that SplitSize is bigger than 0 if Fission is chosen
+	if bf.Fission && bf.SplitSize <= 0 {
+		return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
 	}
 	return nil
 }
