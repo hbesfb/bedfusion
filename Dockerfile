@@ -1,3 +1,3 @@
-FROM debian:bookworm
+FROM alpine:3.21.0
 COPY bedfusion /bedfusion
-ENTRYPOINT ["/bedfusion"]
+CMD ["/bedfusion"]
