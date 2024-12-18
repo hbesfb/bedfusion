@@ -10,23 +10,33 @@ import (
 	"strings"
 )
 
-// Opening and reading the bed files
+// Opening and reading the bed files and optional fasta index file
 func (bf *Bedfile) Read() error {
 	for _, input := range bf.Inputs {
-		file, err := os.Open(input)
+		bedFile, err := os.Open(input)
 		if err != nil {
 			return err
 		}
-		defer file.Close()
-		if err := bf.read(file); err != nil {
-			return fmt.Errorf("can't read file %s: %q", input, err)
+		defer bedFile.Close()
+		if err := bf.readBed(bedFile); err != nil {
+			return fmt.Errorf("can't read bed file %s: %q", input, err)
+		}
+	}
+	if bf.FastaIdx != "" {
+		fastaIdxFile, err := os.Open(bf.FastaIdx)
+		if err != nil {
+			return err
+		}
+		defer fastaIdxFile.Close()
+		if err := bf.readFastaIdx(fastaIdxFile); err != nil {
+			return fmt.Errorf("can't read fasta index file %s: %q", bf.FastaIdx, err)
 		}
 	}
 	return nil
 }
 
 // Reading the bed file
-func (bf *Bedfile) read(file io.Reader) error {
+func (bf *Bedfile) readBed(file io.Reader) error {
 	var err error
 	var expectedNrOfCols int
 
@@ -60,7 +70,7 @@ func (bf *Bedfile) read(file io.Reader) error {
 		if lineNr == len(bf.Header)+1 && expectedNrOfCols == 0 {
 			expectedNrOfCols = len(l.Full)
 			if expectedNrOfCols < minNrCols {
-				return fmt.Errorf("less than 3 columns on line %d: %s", lineNr, lineText)
+				return fmt.Errorf("less than %d columns on line %d: %s", minNrCols, lineNr, lineText)
 			}
 		}
 		if len(l.Full) != expectedNrOfCols {
@@ -104,5 +114,42 @@ func (bf *Bedfile) read(file io.Reader) error {
 		}
 		bf.Lines = append(bf.Lines, l)
 	}
+	return nil
+}
+
+// Reading the fasta index file
+func (bf *Bedfile) readFastaIdx(file io.Reader) error {
+	minNrCols := 2
+	chrLengthMap := map[string]int{}
+
+	const (
+		chrIdx  = 0
+		sizeIdx = 1
+	)
+
+	lineNr := 0
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lineNr++
+
+		lineText := scanner.Text()
+
+		// Split line
+		cols := strings.Split(lineText, "\t")
+
+		// For the first content line set the number of columns if it is empty
+		if len(cols) < minNrCols {
+			return fmt.Errorf("expected at least %d columns on line %d got %d: %s",
+				minNrCols, lineNr, len(cols), lineText)
+		}
+
+		// Put chromosome sizes in map
+		size, err := strconv.Atoi(cols[sizeIdx])
+		if err != nil {
+			return fmt.Errorf("non-int size for chr %s on line %d: %s", cols[chrIdx], lineNr, cols[sizeIdx])
+		}
+		chrLengthMap[cols[chrIdx]] = size
+	}
+	bf.chrLengthMap = chrLengthMap
 	return nil
 }
