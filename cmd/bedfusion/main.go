@@ -41,6 +41,10 @@ func main() {
 	if !s.Bedfile.NoMerge {
 		s.Bedfile.MergeLines()
 	}
+	// Pad
+	if s.Bedfile.Padding != 0 {
+		s.Bedfile.PadLines()
+	}
 	// Deduplicate if chosen and we have not merged
 	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
 		s.Bedfile.DeduplicateLines()

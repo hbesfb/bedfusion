@@ -123,7 +123,6 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 	chrLengthMap := map[string]int{}
 
 	const (
-		chrIdx  = 0
 		sizeIdx = 1
 	)
 
