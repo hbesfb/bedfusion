@@ -170,7 +170,6 @@ func TestHandleCCSSorting(t *testing.T) {
 		testing     string
 		bed         Bedfile
 		expectedBed Bedfile
-		shouldFail  bool
 	}
 	testCases := []testCase{
 		{
@@ -224,7 +223,6 @@ func TestCleanPaths(t *testing.T) {
 		testing     string
 		bed         Bedfile
 		expectedBed Bedfile
-		shouldFail  bool
 	}
 	testCases := []testCase{
 		{
