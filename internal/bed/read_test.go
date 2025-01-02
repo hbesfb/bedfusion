@@ -630,6 +630,33 @@ func TestReadfastaIdx(t *testing.T) {
 			},
 		},
 		{
+			testing: "sort-type==fidx",
+			bed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+				SortType: "fidx",
+			},
+			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
+				"2\t243199373\t253404903\t60\t61\n" +
+				"3\t198022430\t500657651\t60\t61\n" +
+				"4\t191154276\t701980507\t60\t61\n",
+			expectedBed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+				SortType: "fidx",
+				chrLengthMap: map[string]int{
+					"1": 249250621,
+					"2": 243199373,
+					"3": 198022430,
+					"4": 191154276,
+				},
+				chrOrderMap: map[string]int{
+					"1": 1,
+					"2": 2,
+					"3": 3,
+					"4": 4,
+				},
+			},
+		},
+		{
 			testing: "only two columns",
 			bed: Bedfile{
 				FastaIdx: "test-chr-size.txt",

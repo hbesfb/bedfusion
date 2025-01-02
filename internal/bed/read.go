@@ -119,6 +119,8 @@ func (bf *Bedfile) readBed(file io.Reader) error {
 
 // Reading the fasta index file
 func (bf *Bedfile) readFastaIdx(file io.Reader) error {
+	var chrOrder []string
+
 	minNrCols := 2
 	chrLengthMap := map[string]int{}
 
@@ -142,12 +144,18 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 				minNrCols, lineNr, len(cols), lineText)
 		}
 
-		// Put chromosome sizes in map
+		// Put chromosome sizes in map and chr in order
 		size, err := strconv.Atoi(cols[sizeIdx])
 		if err != nil {
 			return fmt.Errorf("non-int size for chr %s on line %d: %s", cols[chrIdx], lineNr, cols[sizeIdx])
 		}
 		chrLengthMap[cols[chrIdx]] = size
+		chrOrder = append(chrOrder, cols[chrIdx])
+	}
+
+	// Overwrite chr order map if --sorting-type=fidx
+	if bf.SortType == "fidx" {
+		bf.chrOrderMap = chrOrderToMap(chrOrder)
 	}
 	bf.chrLengthMap = chrLengthMap
 	return nil
