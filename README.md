@@ -67,7 +67,7 @@ Example bed file `examples/merge-test2.bed`:
 
 - [sorting](./docs/sorting.md)
 - [merging](./docs/merging.md)
-- [fission](./docs/fission.md)
+- [splitting/fission](./docs/fission.md)
 - [track files](./docs/track-files.md)
 - [using a configuration file](./docs/config-file.md)
 
