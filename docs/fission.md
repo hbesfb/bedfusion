@@ -1,6 +1,6 @@
 # Fission
 
-The `-f/--fission` options split regions, instead of merging regions which is the default behaviour of BedFusion. Note that bed files will still be [sorted](./sortjing.md).
+The `-f/--fission` options split regions, instead of merging regions which is the default behaviour of BedFusion. Note that bed files will still be [sorted](./sorting.md).
 
 Example bed file `examples/fission-test.bed`:
 
