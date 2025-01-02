@@ -120,6 +120,19 @@ func TestVerifyAndHandle(t *testing.T) {
 			},
 		},
 		{
+			testing: "split size and paths",
+			bed: Bedfile{
+				Fission:   true,
+				SplitSize: 100,
+				Inputs:    []string{"/some/path/test.bed"},
+			},
+			expectedBed: Bedfile{
+				Fission:   true,
+				SplitSize: 100,
+				Inputs:    []string{"/some/path/test.bed"},
+			},
+		},
+		{
 			testing: "strand col less than 3",
 			bed: Bedfile{
 				Inputs:    []string{"/some/path/test.bed"},
@@ -146,6 +159,15 @@ func TestVerifyAndHandle(t *testing.T) {
 				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   4,
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "split size is < 0",
+			bed: Bedfile{
+				Fission:   true,
+				SplitSize: 0,
+				Inputs:    []string{"/some/path/test.bed"},
 			},
 			shouldFail: true,
 		},
