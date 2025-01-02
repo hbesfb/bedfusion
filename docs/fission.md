@@ -1,6 +1,6 @@
 # Fission
 
-The `-f/--fission` options split regions, instead of merging regions which is the default behaviour of BedFusion. Note that bed files will still be [sorted](./sorting.md).
+The `--fission` options split regions, instead of merging regions which is the default behaviour of BedFusion. Note that bed files will still be [sorted](./sorting.md).
 
 Example bed file `examples/fission-test.bed`:
 
@@ -13,7 +13,7 @@ Example bed file `examples/fission-test.bed`:
 Example: 
 
 ``` shell 
-> bedfusion examples/fission-test.bed -f
+> bedfusion examples/fission-test.bed --fission
 1       1       101     1       A
 1       1       101     -1      B
 1       102     202     1       A
@@ -48,11 +48,12 @@ Example:
 
 ## Using split size
 
-BedFusion `-f/--fission` splits regions into new regions of 100bp as default (`--split-size=100`), but one can choose any split size using the `--split-size` flag. 
+BedFusion `--fission` splits regions into new regions of 100bp as default (`--split-size=100`), but one can choose any split size using the `--split-size` flag. 
 
 For example if one would like bigger regions of 499bp:
 
 ``` shell
+> bedfusion examples/fission-test.bed --fission --split-size=499
 1       1       500     1       A
 1       1       500     -1      B
 1       501     1000    1       A

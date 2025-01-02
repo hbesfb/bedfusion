@@ -26,7 +26,7 @@ type Bedfile struct {
 	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge regions"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
-	Fission   bool `env:"FISSION" group:"fission" cmd:"" short:"f" help:"Split regions into smaller regions"`
+	Fission   bool `env:"FISSION" group:"fission" cmd:"" help:"Split regions into smaller regions"`
 	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:"100" help:"Fission region split size in bp. Must be > 0"`
 
 	Header      []string `kong:"-"`
@@ -90,6 +90,7 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		if bf.Fission {
 			return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
 		}
+		// TODO: Should only be given if one is using a config file (will be fixed when merged into the feature/padding branch)
 		fmt.Fprintf(os.Stderr, "warning: split size is < 0: %d\n", bf.SplitSize)
 	}
 	return nil
