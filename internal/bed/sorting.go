@@ -20,6 +20,9 @@ func (bf *Bedfile) Sort() error {
 		bf.Lines = naturalSort(bf.Lines)
 	case "ccs":
 		bf.Lines = customChrSort(bf.Lines, bf.chrOrderMap)
+	// TODO: Make it possible to actually use fasta index files for sorting
+	case "fasta":
+		bf.Lines = customChrSort(bf.Lines, bf.chrOrderMap)
 	default:
 		return fmt.Errorf("unknown sorting type %s", bf.SortType)
 	}

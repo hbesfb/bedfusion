@@ -9,7 +9,6 @@ func (bf *Bedfile) PadLines() {
 		line.Start = line.Start - bf.Padding
 		line.Stop = line.Stop + bf.Padding
 		// Make sure that the padding does not exceed the chromosome limits
-		// if the chromosome exists in the fasta index file
 		chrLength, ok := bf.chrLengthMap[line.Chr]
 		if line.Start < 1 {
 			line.Start = 1

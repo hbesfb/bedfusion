@@ -17,6 +17,11 @@ type session struct {
 	ctx        *kong.Context
 }
 
+// Validate bed input
+func (s *session) Validate() error {
+	return s.Bedfile.VerifyAndHandle()
+}
+
 func main() {
 	var s session
 	// Getting variables
@@ -27,11 +32,6 @@ func main() {
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
 	)
-	// Verify and handle bed file input
-	if err := s.Bedfile.VerifyAndHandle(); err != nil {
-		fmt.Fprintf(os.Stderr, "error upon verification: %q\n", err)
-		s.ctx.Exit(1)
-	}
 	// Read bed file
 	if err := s.Bedfile.Read(); err != nil {
 		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)

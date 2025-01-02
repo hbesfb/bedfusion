@@ -13,7 +13,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestVerifyAndHandle(t *testing.T) {
+func TestVerifyAndHandleColumns(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing     string
@@ -23,24 +23,13 @@ func TestVerifyAndHandle(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			testing: "correct input, only input path",
-			bed: Bedfile{
-				Inputs: []string{"/some/path/test.bed"},
-			},
-			expectedBed: Bedfile{
-				Inputs: []string{"/some/path/test.bed"},
-			},
-		},
-		{
 			testing: "correct input with strand col",
 			bed: Bedfile{
 				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 			},
 			expectedBed: Bedfile{
 				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 			},
 		},
@@ -48,12 +37,10 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "correct input with feat col",
 			bed: Bedfile{
 				Inputs:  []string{"/some/path/test.bed"},
-				Output:  "/some/output/path/output.bed",
 				FeatCol: 3,
 			},
 			expectedBed: Bedfile{
 				Inputs:  []string{"/some/path/test.bed"},
-				Output:  "/some/output/path/output.bed",
 				FeatCol: 2,
 			},
 		},
@@ -61,32 +48,131 @@ func TestVerifyAndHandle(t *testing.T) {
 			testing: "correct input with both cols",
 			bed: Bedfile{
 				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
 				StrandCol: 4,
 				FeatCol:   3,
 			},
 			expectedBed: Bedfile{
 				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
 				StrandCol: 3,
 				FeatCol:   2,
 			},
 		},
 		{
-			testing: "unclean paths",
+			testing: "strand col less than 3",
 			bed: Bedfile{
-				Inputs:    []string{"/some/../path/test1.bed", "./some/../path/./test2.bed"},
-				Output:    "/some/./output/./path/./output.bed",
-				StrandCol: 4,
+				Inputs:    []string{"/some/path/test.bed"},
+				StrandCol: 2,
 				FeatCol:   3,
 			},
-			expectedBed: Bedfile{
-				Inputs:    []string{"/path/test1.bed", "path/test2.bed"},
-				Output:    "/some/output/path/output.bed",
-				StrandCol: 3,
+			shouldFail: true,
+		},
+		{
+			testing: "feat col less than 3",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				StrandCol: 4,
 				FeatCol:   2,
 			},
+			shouldFail: true,
 		},
+		{
+			testing: "overlapping strand and feat cols",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				StrandCol: 4,
+				FeatCol:   4,
+			},
+			shouldFail: true,
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			err := tc.bed.verifyAndHandleColumns()
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+			if !tc.shouldFail {
+				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+					t.Error("expected VS received bed", diff)
+				}
+			}
+		})
+	}
+}
+
+func TestVerifyFastaIdxCombinations(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing    string
+		bed        Bedfile
+		shouldFail bool
+	}
+	testCases := []testCase{
+		{
+			testing: "correct input, with both padding and fasta-idx selected",
+			bed: Bedfile{
+				Inputs:   []string{"/some/path/test.bed"},
+				FastaIdx: "/some/fasta/idx/file.fasta.fai",
+				Padding:  2,
+			},
+		},
+		{
+			testing: "correct input, with both sorting type == fidx and fasta-idx selected",
+			bed: Bedfile{
+				Inputs:   []string{"/some/path/test.bed"},
+				FastaIdx: "/some/fasta/idx/file.fasta.fai",
+				SortType: "fidx",
+			},
+		},
+		{
+			testing: "correct input, with padding, sorting type == fidx and fasta-idx selected",
+			bed: Bedfile{
+				Inputs:   []string{"/some/path/test.bed"},
+				FastaIdx: "/some/fasta/idx/file.fasta.fai",
+				Padding:  2,
+				SortType: "fidx",
+			},
+		},
+		{
+			testing: "padding selected, but missing fasta index file",
+			bed: Bedfile{
+				Inputs:  []string{"/some/path/test.bed"},
+				Padding: 2,
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "sorting type == fidx and fasta-idx selected, but missing fasta index file",
+			bed: Bedfile{
+				Inputs:   []string{"/some/path/test.bed"},
+				FastaIdx: "/some/fasta/idx/file.fasta.fai",
+				SortType: "fidx",
+			},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			err := tc.bed.verifyFastaIdxCombinations()
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+		})
+	}
+}
+
+func TestHandleCCSSorting(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing     string
+		bed         Bedfile
+		expectedBed Bedfile
+		shouldFail  bool
+	}
+	testCases := []testCase{
 		{
 			testing: "sortType is ccs, and chrOrder is empty",
 			bed: Bedfile{
@@ -119,49 +205,58 @@ func TestVerifyAndHandle(t *testing.T) {
 				},
 			},
 		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			tc.bed.handleCCSSorting()
+			if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+				t.Error("expected VS received bed", diff)
+			}
+		})
+	}
+}
+
+func TestCleanPaths(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing     string
+		bed         Bedfile
+		expectedBed Bedfile
+		shouldFail  bool
+	}
+	testCases := []testCase{
 		{
-			testing: "strand col less than 3",
+			testing: "correct input, only input path",
 			bed: Bedfile{
-				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
-				StrandCol: 2,
-				FeatCol:   3,
+				Inputs: []string{"/some/path/test.bed"},
 			},
-			shouldFail: true,
+			expectedBed: Bedfile{
+				Inputs: []string{"/some/path/test.bed"},
+			},
 		},
 		{
-			testing: "feat col less than 3",
+			testing: "unclean paths",
 			bed: Bedfile{
-				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
-				StrandCol: 4,
-				FeatCol:   2,
+				Inputs:   []string{"/some/../path/test1.bed", "./some/../path/./test2.bed"},
+				Output:   "/some/./output/./path/./output.bed",
+				FastaIdx: "some/../some/./fasta/idx/path/./file.fasta.fai",
 			},
-			shouldFail: true,
-		},
-		{
-			testing: "overlapping strand and feat cols",
-			bed: Bedfile{
-				Inputs:    []string{"/some/path/test.bed"},
-				Output:    "/some/output/path/output.bed",
-				StrandCol: 4,
-				FeatCol:   4,
+			expectedBed: Bedfile{
+				Inputs:   []string{"/path/test1.bed", "path/test2.bed"},
+				Output:   "/some/output/path/output.bed",
+				FastaIdx: "some/fasta/idx/path/file.fasta.fai",
 			},
-			shouldFail: true,
 		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			err := tc.bed.VerifyAndHandle()
-			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
-				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
-			}
-			if !tc.shouldFail {
-				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
-					t.Error("expected VS received bed", diff)
-				}
+			tc.bed.cleanPaths()
+			if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+				t.Error("expected VS received bed", diff)
 			}
 		})
 	}

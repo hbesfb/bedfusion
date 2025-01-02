@@ -1,6 +1,7 @@
 package bed
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -12,21 +13,21 @@ var humanChrOrder = []string{"1", "chr1", "2", "chr2", "3", "chr3", "4", "chr4",
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
-	Inputs []string `arg:"" help:"Bed file path(s). If more than one is provided the files will be joined as if they were one file"`
-	Output string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
+	Inputs   []string `arg:"" help:"Bed file path(s). If more than one is provided the files will be joined as if they were one file"`
+	Output   string   `env:"OUTPUT_FILE" short:"o" help:"Path to the output file. If unset the output will be written to stdout"`
+	FastaIdx string   `env:"FASTA_IDX" help:"Tab separated file containing at least two columns where the first column contains the chromosome and the second it's size. Compatible with fasta index files, but any text file can be used as long as the file conditions are met"`
 
 	StrandCol int `env:"STRAND_COL" group:"input" help:"The column containing the strand information (1-based column index). If this option is set regions on the same strand will not be merged"`
 	FeatCol   int `env:"FEAT_COL" group:"input" help:"The column containing the feature (e.g. gene id, transcript id etc.) information (1-based column index). If this option is set regions on the same feature will not be merged"`
 
-	SortType    string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat,ccs" default:"lex" short:"s" help:"How the bed file should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2 < MT < X), nat = natural sorting (chr: 1 < 2 < 10 < MT < X), ccs = custom chromosome sorting (see --chr-order flag )"`
-	ChrOrder    []string `env:"CHR_ORDER" group:"sorting" help:"Comma separated custom chromosome order, to be used with custom chromosome sorting (--sort-type=ccs). Chromosomes not on the list will be sorted naturally after the ones in the list. If none is provided human chromosome order will be used (1-21, X, Y, MT)"`
+	SortType    string   `env:"SORT_TYPE" group:"sorting" enum:"lex,nat,ccs,fidx" default:"lex" short:"s" help:"How the bed file should be sorted. lex = lexicographic sorting (chr: 1 < 10 < 2 < MT < X), nat = natural sorting (chr: 1 < 2 < 10 < MT < X), ccs = custom chromosome sorting (see --chr-order flag ), fidx = use ordering from fasta index file (must be used together with --fasta-idx)"`
+	ChrOrder    []string `env:"CHR_ORDER" group:"sorting" help:"Comma separated custom chromosome order, to be used with custom chromosome sorting (--sort-type=ccs). Chromosomes not on the list will be sorted naturally after the ones in the list"`
 	Deduplicate bool     `env:"DEDUPLICATE" group:"sorting" cmd:"" short:"d" help:"Remove duplicated lines"`
 
 	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge regions"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
-	Padding  int    `env:"PADDING" group:"padding" and:"padding" help:"Padding of bed files. Note that padding is done after merging"`
-	FastaIdx string `env:"FASTA_IDX" group:"padding" and:"padding" help:"Tab separated file containing at least two columns where the first column contains the chromosome and the second it's size. Compatible with fasta index files, but any text file can be used as long as the file conditions are met"`
+	Padding int `env:"PADDING" group:"padding" help:"Padding of bed files. Note that padding is done after merging. Must be used together with --fasta-idx. Chromosomes not in the file will be assumed to be of infinite length"`
 
 	Header       []string `kong:"-"`
 	Lines        []Line   `kong:"-"`
@@ -50,9 +51,21 @@ const (
 	stopIdx  = 2
 )
 
-// Verifies the user input for Bedfiles, adds a chrOrderMap, fixes paths
-// and subtracts 1 from cols to be able to use zero-based indexing
+// Verifies and handles Bedfile input
 func (bf *Bedfile) VerifyAndHandle() error {
+	if err := bf.verifyAndHandleColumns(); err != nil {
+		return err
+	}
+	if err := bf.verifyFastaIdxCombinations(); err != nil {
+		return err
+	}
+	bf.handleCCSSorting()
+	bf.cleanPaths()
+	return nil
+}
+
+// Verifies Strand and Feat columns and subtracts 1 to be able to use zero-based indexing
+func (bf *Bedfile) verifyAndHandleColumns() error {
 	if bf.StrandCol != 0 {
 		if bf.StrandCol < stopIdx+1 {
 			return fmt.Errorf("strand column is at position less than 3: %d", bf.StrandCol)
@@ -68,6 +81,24 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		}
 		bf.FeatCol--
 	}
+	return nil
+}
+
+// Verify fasta-idx combinations
+func (bf Bedfile) verifyFastaIdxCombinations() error {
+	// Verify that fasta-idx is set if padding is selected
+	if bf.Padding != 0 && bf.FastaIdx == "" {
+		return errors.New("--padding must be used together with --fasta-idx")
+	}
+	// Verify that fasta-idx is set if sort type is fastaidx
+	if bf.SortType == "fidx" && bf.FastaIdx == "" {
+		return errors.New("--sort-type=fidx must be used together with --fasta-idx")
+	}
+	return nil
+}
+
+// Create chr order map
+func (bf *Bedfile) handleCCSSorting() {
 	// Creating chromosome order map only if from custom chromosome
 	// sorting is chosen
 	if bf.SortType == "ccs" {
@@ -76,14 +107,6 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		}
 		bf.chrOrderMap = chrOrderToMap(bf.ChrOrder)
 	}
-	// Clean input paths
-	for i, input := range bf.Inputs {
-		bf.Inputs[i] = filepath.Clean(input)
-	}
-	if bf.Output != "" {
-		bf.Output = filepath.Clean(bf.Output)
-	}
-	return nil
 }
 
 // Convert provided chromosome order to map
@@ -93,4 +116,17 @@ func chrOrderToMap(chrOrder []string) map[string]int {
 		chrOrderMap[strings.ToLower(chr)] = idx + 1
 	}
 	return chrOrderMap
+}
+
+// Clean paths
+func (bf *Bedfile) cleanPaths() {
+	for i, input := range bf.Inputs {
+		bf.Inputs[i] = filepath.Clean(input)
+	}
+	if bf.Output != "" {
+		bf.Output = filepath.Clean(bf.Output)
+	}
+	if bf.FastaIdx != "" {
+		bf.FastaIdx = filepath.Clean(bf.FastaIdx)
+	}
 }
