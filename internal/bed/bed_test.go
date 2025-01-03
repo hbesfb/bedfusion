@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/alecthomas/kong"
 	"github.com/go-test/deep"
 )
 
@@ -144,6 +145,33 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			shouldFail: true,
 		},
 		{
+			testing: "padding of type err selected, but missing fasta index file",
+			bed: Bedfile{
+				Inputs:      []string{"/some/path/test.bed"},
+				Padding:     2,
+				PaddingType: "err",
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "padding of type warn selected, but missing fasta index file",
+			bed: Bedfile{
+				Inputs:      []string{"/some/path/test.bed"},
+				Padding:     2,
+				PaddingType: "warn",
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "padding of type force selected, but missing fasta index file",
+			bed: Bedfile{
+				Inputs:      []string{"/some/path/test.bed"},
+				Padding:     2,
+				PaddingType: "force",
+			},
+			shouldFail: false,
+		},
+		{
 			testing: "sorting type == fidx and fasta-idx selected, but missing fasta index file",
 			bed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
@@ -156,6 +184,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
+			kong.ApplyDefaults(tc.bed)
 			err := tc.bed.verifyFastaIdxCombinations()
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)

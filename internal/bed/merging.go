@@ -11,6 +11,7 @@ func (bf *Bedfile) MergeLines() {
 	var merged Line
 	var mergedLines []Line
 	for i, l := range mergeSort(bf.Lines) {
+		// TODO: Add padding here, but one per line
 		// If the lines are overlapping or touching merge them
 		if i != 0 &&
 			merged.Chr == l.Chr &&
