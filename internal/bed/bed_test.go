@@ -4,7 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/alecthomas/kong"
 	"github.com/go-test/deep"
 )
 
@@ -184,9 +183,6 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			if err := kong.ApplyDefaults(tc.bed); err != nil {
-				t.Fatal(err)
-			}
 			err := tc.bed.verifyFastaIdxCombinations()
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
