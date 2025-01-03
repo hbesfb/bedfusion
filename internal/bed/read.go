@@ -152,6 +152,10 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 		chrLengthMap[cols[chrIdx]] = size
 		chrOrder = append(chrOrder, cols[chrIdx])
 	}
+	// Check that file is not empty
+	if lineNr == 0 {
+		return fmt.Errorf("fasta index file %s is empty", bf.FastaIdx)
+	}
 
 	// Overwrite chr order map if --sorting-type=fidx
 	if bf.SortType == "fidx" {

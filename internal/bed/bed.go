@@ -29,7 +29,7 @@ type Bedfile struct {
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
 	Padding     int    `env:"PADDING" group:"padding" help:"Padding of bed files. Note that padding is done before merging. Must be used together with --fasta-idx (but see --padding-type)"`
-	PaddingType string `env:"PADDING_TYPE" group:"padding" enum:"err,warn,force" default:"err" help:"Padding type. err = bedfusion will fail if it encounters a chromosome not in the fasta index file, warn = will only pad regions in the fasta index file and give a warning about chromosomes not in the fasta index file, force = will pad regardless, if --fasta-idx is set there will be given a warning about the chromosomes not in the fasta index file, if --fasta-idx is not set no warnigns will be given"`
+	PaddingType string `env:"PADDING_TYPE" group:"padding" enum:"err,warn,force" default:"err" help:"Padding type. err = bedfusion will fail if it encounters a chromosome not in the fasta index file, warn = will only pad regions in the fasta index file and give a warning about chromosomes not in the fasta index file, force = will pad regardless, if --fasta-idx is set there will be given a warning about the chromosomes not in the fasta index file, if --fasta-idx is not set no warnings will be given"`
 
 	Fission   bool `env:"FISSION" group:"fission" cmd:"" help:"Split regions into smaller regions"`
 	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:"100" help:"Fission region split size in bp. Must be > 0"`

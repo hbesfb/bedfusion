@@ -727,6 +727,13 @@ func TestReadfastaIdx(t *testing.T) {
 				"4\tlarge\n",
 			shouldFail: true,
 		},
+		{
+			testing: "empty fasta idx file",
+			bed: Bedfile{
+				FastaIdx: "empty.fasta.fai",
+			},
+			shouldFail: true,
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
