@@ -3,6 +3,7 @@ package bed
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -28,6 +29,9 @@ type Bedfile struct {
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
 	Padding int `env:"PADDING" group:"padding" help:"Padding of bed files. Note that padding is done after merging. Must be used together with --fasta-idx. Chromosomes not in the file will be assumed to be of infinite length"`
+
+	Fission   bool `env:"FISSION" group:"fission" cmd:"" help:"Split regions into smaller regions"`
+	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:"100" help:"Fission region split size in bp. Must be > 0"`
 
 	Header       []string `kong:"-"`
 	Lines        []Line   `kong:"-"`
@@ -57,6 +61,9 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		return err
 	}
 	if err := bf.verifyFastaIdxCombinations(); err != nil {
+		return err
+	}
+	if err := bf.verifySplitSize(); err != nil {
 		return err
 	}
 	bf.handleCCSSorting()
@@ -93,6 +100,20 @@ func (bf Bedfile) verifyFastaIdxCombinations() error {
 	// Verify that fasta-idx is set if sort type is fastaidx
 	if bf.SortType == "fidx" && bf.FastaIdx == "" {
 		return errors.New("--sort-type=fidx must be used together with --fasta-idx")
+	}
+	return nil
+}
+
+func (bf Bedfile) verifySplitSize() error {
+	// Check that SplitSize is bigger than 0
+	// Give error if fission is true
+	// Warn if fission is not chosen
+	if bf.SplitSize <= 0 {
+		if bf.Fission {
+			return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
+		}
+		// TODO: Should only be given if one is using a config file (will be fixed when merged into the feature/padding branch)
+		fmt.Fprintf(os.Stderr, "warning: split size is < 0: %d\n", bf.SplitSize)
 	}
 	return nil
 }

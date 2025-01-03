@@ -38,12 +38,16 @@ func main() {
 		s.ctx.Exit(1)
 	}
 	// Merge
-	if !s.Bedfile.NoMerge {
+	if !s.Bedfile.NoMerge && !s.Bedfile.Fission {
 		s.Bedfile.MergeLines()
 	}
 	// Pad
 	if s.Bedfile.Padding != 0 {
 		s.Bedfile.PadLines()
+	}
+	// Fission
+	if s.Bedfile.Fission {
+		s.Bedfile.SplitLines()
 	}
 	// Deduplicate if chosen and we have not merged
 	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
