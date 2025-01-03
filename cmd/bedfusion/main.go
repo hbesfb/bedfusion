@@ -19,7 +19,15 @@ type session struct {
 
 // Validate bed input
 func (s *session) Validate() error {
-	return s.Bedfile.VerifyAndHandle()
+	if err := s.Bedfile.VerifyAndHandle(); err != nil {
+		return err
+	}
+	// Give warnings about wrong unused variables if a
+	// config file is used
+	if s.ConfigFile != "" {
+		s.Bedfile.WarnAboutWrongUnusedVariables()
+	}
+	return nil
 }
 
 func main() {

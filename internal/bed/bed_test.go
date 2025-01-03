@@ -167,33 +167,36 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 func TestVerifySplitSize(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		testing     string
-		bed         Bedfile
-		expectedBed Bedfile
-		shouldFail  bool
+		testing    string
+		bed        Bedfile
+		shouldFail bool
 	}
 	testCases := []testCase{
 		{
-			testing: "split size and paths",
+			testing: "fission used, correct split size",
 			bed: Bedfile{
-				Fission:   true,
-				SplitSize: 100,
-				Inputs:    []string{"/some/path/test.bed"},
-			},
-			expectedBed: Bedfile{
 				Fission:   true,
 				SplitSize: 100,
 				Inputs:    []string{"/some/path/test.bed"},
 			},
 		},
 		{
-			testing: "split size is < 0",
+			testing: "fission used, split size is < 0",
 			bed: Bedfile{
 				Fission:   true,
 				SplitSize: 0,
 				Inputs:    []string{"/some/path/test.bed"},
 			},
 			shouldFail: true,
+		},
+		{
+			testing: "fission not used, split size is < 0",
+			bed: Bedfile{
+				Fission:   false,
+				SplitSize: 0,
+				Inputs:    []string{"/some/path/test.bed"},
+			},
+			shouldFail: false,
 		},
 	}
 	for _, tc := range testCases {
@@ -203,11 +206,6 @@ func TestVerifySplitSize(t *testing.T) {
 			err := tc.bed.verifySplitSize()
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
-			}
-			if !tc.shouldFail {
-				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
-					t.Error("expected VS received bed", diff)
-				}
 			}
 		})
 	}

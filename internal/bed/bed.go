@@ -71,6 +71,14 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	return nil
 }
 
+// Give warnings for wrong unused variables
+func (bf Bedfile) WarnAboutWrongUnusedVariables() {
+	// Warn about wrong split size if unused
+	if bf.SplitSize <= 0 && !bf.Fission {
+		fmt.Fprintf(os.Stderr, "warning: split size is <= 0: %d\n", bf.SplitSize)
+	}
+}
+
 // Verifies Strand and Feat columns and subtracts 1 to be able to use zero-based indexing
 func (bf *Bedfile) verifyAndHandleColumns() error {
 	if bf.StrandCol != 0 {
@@ -104,16 +112,13 @@ func (bf Bedfile) verifyFastaIdxCombinations() error {
 	return nil
 }
 
+// Verify split size if used
 func (bf Bedfile) verifySplitSize() error {
 	// Check that SplitSize is bigger than 0
 	// Give error if fission is true
 	// Warn if fission is not chosen
-	if bf.SplitSize <= 0 {
-		if bf.Fission {
-			return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
-		}
-		// TODO: Should only be given if one is using a config file (will be fixed when merged into the feature/padding branch)
-		fmt.Fprintf(os.Stderr, "warning: split size is < 0: %d\n", bf.SplitSize)
+	if bf.SplitSize <= 0 && bf.Fission {
+		return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
 	}
 	return nil
 }
