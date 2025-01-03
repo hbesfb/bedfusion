@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/alecthomas/kong"
-
 	kongyaml "github.com/alecthomas/kong-yaml"
 
 	"github.com/hbesfb/bedfusion/internal/bed"
@@ -40,10 +36,13 @@ func main() {
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
 	)
+	s.ctx.FatalIfErrorf(s.run())
+}
+
+func (s *session) run() (error, string) {
 	// Read bed file
 	if err := s.Bedfile.Read(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while reading"
 	}
 	// Merge
 	if !s.Bedfile.NoMerge && !s.Bedfile.Fission {
@@ -63,12 +62,11 @@ func main() {
 	}
 	// Sort
 	if err := s.Bedfile.Sort(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while sorting"
 	}
 	// Write output
 	if err := s.Bedfile.Write(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while writing"
 	}
+	return nil, ""
 }
