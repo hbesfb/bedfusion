@@ -39,29 +39,27 @@ func main() {
 	s.ctx.FatalIfErrorf(s.run())
 }
 
-// TODO: Make switch with nomerge and merge to
-// make this function a bit easier to read
 func (s *session) run() (error, string) {
 	// Read bed file
 	if err := s.Bedfile.Read(); err != nil {
 		return err, "while reading"
 	}
-	// Merge
-	// TODO: This function should also pad
-	if !s.Bedfile.NoMerge && !s.Bedfile.Fission {
+	if !s.Bedfile.NoMerge {
+		// Merge
 		s.Bedfile.MergeLines()
-	}
-	// Pad if no merge
-	if s.Bedfile.Padding != 0 && s.Bedfile.NoMerge {
-		s.Bedfile.PadLines()
-	}
-	// Fission
-	if s.Bedfile.Fission {
-		s.Bedfile.SplitLines()
-	}
-	// Deduplicate if chosen and we have not merged
-	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
-		s.Bedfile.DeduplicateLines()
+	} else {
+		// Pad lines
+		if s.Bedfile.Padding != 0 {
+			s.Bedfile.PadLines()
+		}
+		// Fission
+		if s.Bedfile.Fission {
+			s.Bedfile.SplitLines()
+		}
+		// Deduplicate
+		if s.Bedfile.Deduplicate {
+			s.Bedfile.DeduplicateLines()
+		}
 	}
 	// Sort
 	if err := s.Bedfile.Sort(); err != nil {
