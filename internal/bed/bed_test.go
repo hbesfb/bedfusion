@@ -426,3 +426,18 @@ func deepCopyLines(lines []Line) []Line {
 	}
 	return copiedLines
 }
+
+// To make deep copy line
+func deepCopyLine(line Line) Line {
+	fullLineCopy := make([]string, len(line.Full))
+	_ = copy(fullLineCopy, line.Full)
+	copiedLine := Line{
+		Chr:    line.Chr,
+		Start:  line.Start,
+		Stop:   line.Stop,
+		Strand: line.Strand,
+		Feat:   line.Feat,
+		Full:   fullLineCopy,
+	}
+	return copiedLine
+}
