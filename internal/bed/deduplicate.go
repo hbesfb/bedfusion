@@ -1,7 +1,10 @@
 package bed
 
 import (
+	"sort"
 	"strings"
+
+	"github.com/maruel/natural"
 )
 
 // Remove duplicated lines
@@ -18,15 +21,21 @@ func (bf *Bedfile) DeduplicateLines() {
 	bf.Lines = deduplicatedLines
 }
 
-// Remove duplicated strings in slice
-func deduplicateListOfStrings(list []string) []string {
-	var deduplicatedList []string
-	seen := map[string]bool{}
-	for _, i := range list {
-		if !seen[i] {
-			seen[i] = true
-			deduplicatedList = append(deduplicatedList, i)
+// Naturally sort and deduplicate items in slice of strings
+func sortAndDeduplicateListOfStrings(list natural.StringSlice) []string {
+	// Sort list
+	sort.Sort(list)
+	// Deduplicate
+	j := 1
+	for i := 1; i < len(list); i++ {
+		if list[i] == list[i-1] {
+			continue
 		}
+		list[j] = list[i]
+		j++
 	}
-	return deduplicatedList
+	// Since we overwrote the beginning of the list
+	// we only want to return the parts we have
+	// overwritten
+	return list[:j]
 }
