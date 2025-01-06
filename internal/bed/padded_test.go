@@ -143,3 +143,59 @@ func TestPadLines(t *testing.T) {
 		})
 	}
 }
+
+func TestPadLine(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing      string
+		bed          Bedfile
+		line         Line
+		expectedLine Line
+	}
+	testCases := []testCase{
+		{
+			testing: "padding within chromosome",
+			bed: Bedfile{
+				Padding: 10,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 40, Stop: 61,
+				Full: []string{"1", "40", "61"},
+			},
+		},
+		{
+			testing: "padding beyond chromosome",
+			bed: Bedfile{
+				Padding: 1000,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 1, Stop: 100,
+				Full: []string{"1", "1", "100"},
+			},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			paddedLine := tc.bed.PadLine(tc.line)
+			if diff := deep.Equal(tc.expectedLine, paddedLine); diff != nil {
+				t.Error("expected VS received line", diff)
+			}
+		})
+	}
+}
