@@ -64,7 +64,7 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	if err := bf.verifyFastaIdxCombinations(); err != nil {
 		return err
 	}
-	if err := bf.verifySplitSize(); err != nil {
+	if err := bf.verifyAndHandleFissionInput(); err != nil {
 		return err
 	}
 	bf.handleCCSSorting()
@@ -114,12 +114,16 @@ func (bf Bedfile) verifyFastaIdxCombinations() error {
 }
 
 // Verify split size if used
-func (bf Bedfile) verifySplitSize() error {
-	// Check that SplitSize is bigger than 0
-	// Give error if fission is true
-	// Warn if fission is not chosen
-	if bf.SplitSize <= 0 && bf.Fission {
-		return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
+func (bf *Bedfile) verifyAndHandleFissionInput() error {
+	// If fission is selected we will not merge
+	if bf.Fission {
+		bf.NoMerge = true
+		// Check that SplitSize is bigger than 0
+		// Give error if fission is true
+		// Warn if fission is not chosen
+		if bf.SplitSize <= 0 {
+			return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
+		}
 	}
 	return nil
 }

@@ -191,19 +191,48 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 	}
 }
 
-func TestVerifySplitSize(t *testing.T) {
+func TestVerifyAndHandleFissionInput(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		testing    string
-		bed        Bedfile
-		shouldFail bool
+		testing     string
+		bed         Bedfile
+		expectedBed Bedfile
+		shouldFail  bool
 	}
 	testCases := []testCase{
+		{
+			testing: "fission not used",
+			bed: Bedfile{
+				Inputs: []string{"/some/path/test.bed"},
+			},
+			expectedBed: Bedfile{
+				Inputs: []string{"/some/path/test.bed"},
+			},
+		},
 		{
 			testing: "fission used, correct split size",
 			bed: Bedfile{
 				Fission:   true,
 				SplitSize: 100,
+				Inputs:    []string{"/some/path/test.bed"},
+			},
+			expectedBed: Bedfile{
+				Fission:   true,
+				SplitSize: 100,
+				Inputs:    []string{"/some/path/test.bed"},
+				NoMerge:   true,
+			},
+		},
+		{
+			testing: "fission not used, split size is < 0",
+			bed: Bedfile{
+				Fission:   false,
+				SplitSize: 0,
+				Inputs:    []string{"/some/path/test.bed"},
+			},
+			expectedBed: Bedfile{
+				Fission:   false,
+				SplitSize: 0,
 				Inputs:    []string{"/some/path/test.bed"},
 			},
 		},
@@ -214,25 +243,27 @@ func TestVerifySplitSize(t *testing.T) {
 				SplitSize: 0,
 				Inputs:    []string{"/some/path/test.bed"},
 			},
-			shouldFail: true,
-		},
-		{
-			testing: "fission not used, split size is < 0",
-			bed: Bedfile{
-				Fission:   false,
+			expectedBed: Bedfile{
+				Fission:   true,
 				SplitSize: 0,
 				Inputs:    []string{"/some/path/test.bed"},
+				NoMerge:   true,
 			},
-			shouldFail: false,
+			shouldFail: true,
 		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			err := tc.bed.verifySplitSize()
+			err := tc.bed.verifyAndHandleFissionInput()
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+			if !tc.shouldFail {
+				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+					t.Error("expected VS received bed", diff)
+				}
 			}
 		})
 	}
