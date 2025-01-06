@@ -5,14 +5,16 @@ import "strconv"
 // Pad regions
 func (bf *Bedfile) PadLines() {
 	var paddedLines []Line
+	// var chrsNotInMap []string
 	for _, line := range bf.Lines {
-		paddedLines = append(paddedLines, bf.PadLine(line))
+		paddedLine, _ := bf.padLine(line)
+		paddedLines = append(paddedLines, paddedLine)
 	}
 	bf.Lines = paddedLines
 }
 
 // Pad single line
-func (bf Bedfile) PadLine(line Line) Line {
+func (bf Bedfile) padLine(line Line) (Line, bool) {
 	line.Start = line.Start - bf.Padding
 	line.Stop = line.Stop + bf.Padding
 	// Make sure that the padding does not exceed the chromosome limits
@@ -25,5 +27,5 @@ func (bf Bedfile) PadLine(line Line) Line {
 	}
 	line.Full[startIdx] = strconv.Itoa(line.Start)
 	line.Full[stopIdx] = strconv.Itoa(line.Stop)
-	return line
+	return line, ok
 }

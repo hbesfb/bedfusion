@@ -147,10 +147,11 @@ func TestPadLines(t *testing.T) {
 func TestPadLine(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		testing      string
-		bed          Bedfile
-		line         Line
-		expectedLine Line
+		testing          string
+		bed              Bedfile
+		line             Line
+		expectedLine     Line
+		expectedChrInMap bool
 	}
 	testCases := []testCase{
 		{
@@ -169,6 +170,7 @@ func TestPadLine(t *testing.T) {
 				Chr: "1", Start: 40, Stop: 61,
 				Full: []string{"1", "40", "61"},
 			},
+			expectedChrInMap: true,
 		},
 		{
 			testing: "padding beyond chromosome",
@@ -186,15 +188,37 @@ func TestPadLine(t *testing.T) {
 				Chr: "1", Start: 1, Stop: 100,
 				Full: []string{"1", "1", "100"},
 			},
+			expectedChrInMap: true,
+		},
+		{
+			testing: "chromosome not part of chrLengthMap",
+			bed: Bedfile{
+				Padding: 10,
+				chrLengthMap: map[string]int{
+					"2": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 40, Stop: 61,
+				Full: []string{"1", "40", "61"},
+			},
+			expectedChrInMap: false,
 		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			paddedLine := tc.bed.PadLine(tc.line)
+			paddedLine, chrInMap := tc.bed.padLine(tc.line)
 			if diff := deep.Equal(tc.expectedLine, paddedLine); diff != nil {
 				t.Error("expected VS received line", diff)
+			}
+			if (!tc.expectedChrInMap && chrInMap) || (tc.expectedChrInMap && !chrInMap) {
+				t.Fatalf("expectedChrInMap is %t, but chrInMap is %t", tc.expectedChrInMap, chrInMap)
 			}
 		})
 	}

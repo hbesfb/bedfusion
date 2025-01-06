@@ -139,3 +139,34 @@ func TestDeduplicateLines(t *testing.T) {
 		})
 	}
 }
+
+func TestDeduplicateListOfStrings(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing                  string
+		list                     []string
+		expectedDeduplicatedList []string
+	}
+	testCases := []testCase{
+		{
+			testing:                  "no duplicates",
+			list:                     []string{"4", "X", "Y", "1"},
+			expectedDeduplicatedList: []string{"4", "X", "Y", "1"},
+		},
+		{
+			testing:                  "duplicates",
+			list:                     []string{"4", "X", "Y", "1", "4", "X", "Y", "1"},
+			expectedDeduplicatedList: []string{"4", "X", "Y", "1"},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			deduplicatedList := deduplicateListOfStrings(tc.list)
+			if diff := deep.Equal(tc.expectedDeduplicatedList, deduplicatedList); diff != nil {
+				t.Error("expected VS received deduplicated list", diff)
+			}
+		})
+	}
+}
