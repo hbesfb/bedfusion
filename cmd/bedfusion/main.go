@@ -46,11 +46,15 @@ func (s *session) run() (error, string) {
 	}
 	if !s.Bedfile.NoMerge {
 		// Merge and pad lines
-		s.Bedfile.MergeAndPadLines()
+		if err := s.Bedfile.MergeAndPadLines(); err != nil {
+			return err, "while padding"
+		}
 	} else {
 		// Pad lines
 		if s.Bedfile.Padding != 0 {
-			s.Bedfile.PadLines()
+			if err := s.Bedfile.PadLines(); err != nil {
+				return err, "while padding"
+			}
 		}
 		// Fission
 		if s.Bedfile.Fission {
