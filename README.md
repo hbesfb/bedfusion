@@ -67,6 +67,7 @@ Example bed file `examples/merge-test2.bed`:
 
 - [sorting](./docs/sorting.md)
 - [merging](./docs/merging.md)
+- [padding](./docs/padding.md)
 - [splitting/fission](./docs/fission.md)
 - [track files](./docs/track-files.md)
 - [using a configuration file](./docs/config-file.md)
@@ -107,3 +108,5 @@ BedFusion supports three separate ways of configuration: flags, a configuration 
 | **fission**                         |                         |                                                                                                                                                                                                                                                                                   |
 | `--fission`                         | `FISSION`               | Split regions into smaller regions                                                                                                                                                                                                                                                |
 | `--split-size=500`                  | `SPLIT_SIZE`            | Fission region split size in bp. Must be > 0                                                                                                                                                                                                                                      |
+
+TODO: Fix flag table

@@ -3,6 +3,7 @@
 BedFusion merges and sorts by default. To highlight the differences between the different merging methods, only the default [lexicographic sorting](./sorting.md#lexicographic-sorting) will be used in these examples.
 
 Example bed file `examples/merge-test.bed`:
+
 ```bed
 1       1       4       1       A
 1       5       8       1       A
