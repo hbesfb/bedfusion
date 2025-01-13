@@ -3,7 +3,6 @@ package bed
 import (
 	"fmt"
 	"os"
-	"slices"
 	"strconv"
 )
 
@@ -14,7 +13,7 @@ func (bf *Bedfile) PadLines() error {
 	var err error
 
 	// Check padding type (just used for internal checks)
-	if !slices.Contains([]string{"err", "warn", "force"}, bf.PaddingType) {
+	if !stringInSlice([]string{"err", "warn", "force"}, bf.PaddingType) {
 		return fmt.Errorf("unknown padding type %s", bf.PaddingType)
 	}
 	// Loop over and pad lines

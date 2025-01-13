@@ -45,8 +45,8 @@ func (s *session) run() (error, string) {
 		return err, "while reading"
 	}
 	if !s.Bedfile.NoMerge {
-		// Merge
-		s.Bedfile.MergeLines()
+		// Merge and pad lines
+		s.Bedfile.MergeAndPadLines()
 	} else {
 		// Pad lines
 		if s.Bedfile.Padding != 0 {

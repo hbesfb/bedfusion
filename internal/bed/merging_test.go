@@ -153,12 +153,13 @@ var testMergeFull = []Line{
 	},
 }
 
-func TestMergeLines(t *testing.T) {
+func TestMergeAndPadLines(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing     string
 		bed         Bedfile
 		expectedBed Bedfile
+		shouldFail  bool
 	}
 	testCases := []testCase{
 		{
@@ -358,14 +359,148 @@ func TestMergeLines(t *testing.T) {
 				},
 			},
 		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = err, chr in chrLengthMap",
+			bed: Bedfile{
+				PaddingType:  "err",
+				Padding:      10,
+				Lines:        deepCopyLines(testMergeChrOnly),
+				chrLengthMap: testChrLengthMap,
+			},
+			expectedBed: Bedfile{
+				PaddingType:  "err",
+				Padding:      10,
+				chrLengthMap: testChrLengthMap,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 40,
+						Full: []string{"1", "1", "40", "1,-1", "A,B"},
+					},
+					{
+						Chr: "2", Start: 1, Stop: 18,
+						Full: []string{"2", "1", "18", "1", "A"},
+					},
+				},
+			},
+		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = warn, chr in chrLengthMap",
+			bed: Bedfile{
+				PaddingType:  "warn",
+				Padding:      10,
+				Lines:        deepCopyLines(testMergeChrOnly),
+				chrLengthMap: testChrLengthMap,
+			},
+			expectedBed: Bedfile{
+				PaddingType:  "warn",
+				Padding:      10,
+				chrLengthMap: testChrLengthMap,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 40,
+						Full: []string{"1", "1", "40", "1,-1", "A,B"},
+					},
+					{
+						Chr: "2", Start: 1, Stop: 18,
+						Full: []string{"2", "1", "18", "1", "A"},
+					},
+				},
+			},
+		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = force, chr in chrLengthMap",
+			bed: Bedfile{
+				PaddingType:  "force",
+				Padding:      10,
+				Lines:        deepCopyLines(testMergeChrOnly),
+				chrLengthMap: testChrLengthMap,
+			},
+			expectedBed: Bedfile{
+				PaddingType:  "force",
+				Padding:      10,
+				chrLengthMap: testChrLengthMap,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 40,
+						Full: []string{"1", "1", "40", "1,-1", "A,B"},
+					},
+					{
+						Chr: "2", Start: 1, Stop: 18,
+						Full: []string{"2", "1", "18", "1", "A"},
+					},
+				},
+			},
+		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = err, chr not in chrLengthMap",
+			bed: Bedfile{
+				PaddingType: "err",
+				Padding:     10,
+				Lines:       deepCopyLines(testMergeChrOnly),
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = warn, chr not in chrLengthMap",
+			bed: Bedfile{
+				PaddingType: "warn",
+				Padding:     10,
+				Lines:       deepCopyLines(testMergeChrOnly),
+			},
+			expectedBed: Bedfile{
+				PaddingType: "warn",
+				Padding:     10,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 8,
+						Full: []string{"1", "1", "8", "1,-1", "A,B"},
+					},
+					{
+						Chr: "1", Start: 20, Stop: 30,
+						Full: []string{"1", "20", "30", "1", "A"},
+					},
+					{
+						Chr: "2", Start: 6, Stop: 8,
+						Full: []string{"2", "6", "8", "1", "A"},
+					},
+				},
+			},
+		},
+		{
+			testing: "testMergeChrOnly, padding = 10, paddingType = force, chr not in chrLengthMap",
+			bed: Bedfile{
+				PaddingType: "force",
+				Padding:     10,
+				Lines:       deepCopyLines(testMergeChrOnly),
+			},
+			expectedBed: Bedfile{
+				PaddingType: "force",
+				Padding:     10,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 40,
+						Full: []string{"1", "1", "40", "1,-1", "A,B"},
+					},
+					{
+						Chr: "2", Start: 1, Stop: 18,
+						Full: []string{"2", "1", "18", "1", "A"},
+					},
+				},
+			},
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			tc.bed.MergeLines()
-			if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
-				t.Error("expected VS received bed", diff)
+			err := tc.bed.MergeAndPadLines()
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+			if !tc.shouldFail {
+				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+					t.Error("expected VS received bed", diff)
+				}
 			}
 		})
 	}
