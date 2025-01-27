@@ -488,6 +488,45 @@ func TestMergeAndPadLines(t *testing.T) {
 				},
 			},
 		},
+		{
+			testing: "padding=5 && overlap=-1",
+			bed: Bedfile{
+				PaddingType:  "err",
+				Padding:      5,
+				Overlap:      -1,
+				chrLengthMap: testChrLengthMap,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 4,
+						Full: []string{"1", "1", "4"},
+					},
+					{
+						Chr: "1", Start: 5, Stop: 9,
+						Full: []string{"1", "5", "9"},
+					},
+					{
+						Chr: "1", Start: 20, Stop: 30,
+						Full: []string{"1", "20", "30"},
+					},
+				},
+			},
+			expectedBed: Bedfile{
+				PaddingType:  "err",
+				Padding:      5,
+				Overlap:      -1,
+				chrLengthMap: testChrLengthMap,
+				Lines: []Line{
+					{
+						Chr: "1", Start: 1, Stop: 14,
+						Full: []string{"1", "1", "14"},
+					},
+					{
+						Chr: "1", Start: 15, Stop: 35,
+						Full: []string{"1", "15", "35"},
+					},
+				},
+			},
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
