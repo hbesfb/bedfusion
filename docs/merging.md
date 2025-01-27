@@ -4,7 +4,7 @@ BedFusion merges and sorts by default. To highlight the differences between the 
 
 Example bed file `examples/merge-test.bed`:
 
-```bed
+``` bed
 1       1       4       1       A
 1       5       8       1       A
 1       6       8       1       A

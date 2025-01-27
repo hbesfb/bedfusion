@@ -182,7 +182,7 @@ Example FASTA index file `examples/test.fasta.fai`:
 
 Example: 
 
-```shell
+``` shell
 > bedfusion examples/sort-test.bed --no-merge -s fidx --fasta-idx=examples/test.fasta.fai 
 1       8       9       -1      B
 1       10      11      -1      A
@@ -221,6 +221,7 @@ When choosing not to merge the bed regions (by using the flag `--no-merge`) one 
 Lets pretend that we copy the `examples/sort-test.bed` file and call this copy `examples/sort-test-copy.bed`, and provide both as input to BedFusion:
 
 Without the flag `--deduplicate/-d`:
+
 ``` shell
 > bedfusion examples/sort-test.bed examples/sort-test-copy.bed --no-merge
 1       8       9       -1      B
@@ -248,6 +249,7 @@ Y       10      11      1       A
 ```
 
 With the flag `--deduplicate/-d`:
+
 ``` shell
 > bedfusion examples/sort-test.bed sort-test-copy.bed --no-merge -d 
 1       8       9       -1      B
