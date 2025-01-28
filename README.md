@@ -1,6 +1,6 @@
 # BedFusion
 
-Another tool for sorting and merging bed files
+Another tool for sorting, merging and padding bed files
 
 Usage: `bedfusion <inputs> ... [flags]`
 
