@@ -14,13 +14,11 @@ func (bf *Bedfile) MergeAndPadLines() error {
 	for i, l := range mergeSort(bf.Lines) {
 		// Pad line
 		if bf.Padding != 0 {
-			var paddedLines []Line
 			var err error
-			paddedLines, chrNotInLengthMap, err = bf.padAccordingToPaddingType(l, nil, chrNotInLengthMap)
+			l, chrNotInLengthMap, err = bf.padAccordingToPaddingType(l, chrNotInLengthMap)
 			if err != nil {
 				return err
 			}
-			l = paddedLines[0]
 		}
 
 		// Merge lines

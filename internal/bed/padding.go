@@ -8,45 +8,39 @@ import (
 
 // Pad regions
 func (bf *Bedfile) PadLines() error {
-	var paddedLines []Line
 	var chrNotInLengthMap []string
 	var err error
 
-	// Check padding type (just used for internal checks)
-	if !stringInSlice([]string{"err", "warn", "force"}, bf.PaddingType) {
-		return fmt.Errorf("unknown padding type %s", bf.PaddingType)
-	}
-
 	// Loop over and pad lines
-	for _, line := range bf.Lines {
-		paddedLines, chrNotInLengthMap, err = bf.padAccordingToPaddingType(line, paddedLines, chrNotInLengthMap)
+	for i, line := range bf.Lines {
+		bf.Lines[i], chrNotInLengthMap, err = bf.padAccordingToPaddingType(line, chrNotInLengthMap)
 		if err != nil {
 			return err
 		}
 	}
 	// Warn depending on padding type
 	bf.paddingWarnings(chrNotInLengthMap)
-	bf.Lines = paddedLines
 	return nil
 }
 
 // Handle missing chromosome in chromosome length map
-func (bf Bedfile) padAccordingToPaddingType(line Line, paddedLines []Line, chrNotInLengthMap []string) ([]Line, []string, error) {
+func (bf Bedfile) padAccordingToPaddingType(line Line, chrNotInLengthMap []string) (Line, []string, error) {
+	// Check padding type (just used for internal checks)
+	if !stringInSlice([]string{"err", "warn", "force"}, bf.PaddingType) {
+		return Line{}, nil, fmt.Errorf("unknown padding type %s", bf.PaddingType)
+	}
+	// Pad line
 	paddedLine, chrInMap := bf.padLine(line)
-	if chrInMap {
-		paddedLines = append(paddedLines, paddedLine)
-	} else {
+	if !chrInMap {
 		switch bf.PaddingType {
 		case "err":
-			return nil, nil, fmt.Errorf("chromosome %s is not in fasta index file %s", line.Chr, bf.FastaIdx)
+			return Line{}, nil, fmt.Errorf("chromosome %s is not in fasta index file %s", line.Chr, bf.FastaIdx)
 		case "warn":
-			paddedLines = append(paddedLines, line)
-		case "force":
-			paddedLines = append(paddedLines, paddedLine)
+			paddedLine = line
 		}
 		chrNotInLengthMap = append(chrNotInLengthMap, line.Chr)
 	}
-	return paddedLines, chrNotInLengthMap, nil
+	return paddedLine, chrNotInLengthMap, nil
 }
 
 // Handle warnings depending on padding types
