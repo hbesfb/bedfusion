@@ -12,6 +12,11 @@ func (bf *Bedfile) PadLines() error {
 	var chrNotInLengthMap []string
 	var err error
 
+	// Check padding type (just used for internal checks)
+	if !stringInSlice([]string{"err", "warn", "force"}, bf.PaddingType) {
+		return fmt.Errorf("unknown padding type %s", bf.PaddingType)
+	}
+
 	// Loop over and pad lines
 	for _, line := range bf.Lines {
 		paddedLines, chrNotInLengthMap, err = bf.padAccordingToPaddingType(line, paddedLines, chrNotInLengthMap)
@@ -38,8 +43,6 @@ func (bf Bedfile) padAccordingToPaddingType(line Line, paddedLines []Line, chrNo
 			paddedLines = append(paddedLines, line)
 		case "force":
 			paddedLines = append(paddedLines, paddedLine)
-		default:
-			return nil, nil, fmt.Errorf("unknown padding type %s", bf.PaddingType)
 		}
 		chrNotInLengthMap = append(chrNotInLengthMap, line.Chr)
 	}
