@@ -170,7 +170,7 @@ Please note that the provided chromosome order is case insensitive.
 
 ## FASTA Index File Sorting 
 
-FASTA index file sorting lets you sort the chromosomes according to the two first columns of a fasta-index file. Chromosomes not in the file will be sorted naturally after the ones in the file.
+FASTA index file sorting lets you sort the chromosomes according to the two first columns of a FASTA index file. Chromosomes not in the file will be sorted naturally after the ones in the file.
 
 Example FASTA index file `examples/test.fasta.fai`: 
 
@@ -197,7 +197,7 @@ X       10      11      1       A
 Y       10      11      1       A
 ```
 
-Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column (in this example gene) will be sorted using natural sorting:
+Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column will be sorted using natural sorting:
 
 ``` shell 
 > bedfusion examples/sort-test.bed --no-merge -s fidx --fasta-idx=examples/test.fasta.fai --strand-col=4 --feat-col=5

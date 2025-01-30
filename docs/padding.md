@@ -2,7 +2,7 @@
 
 BedFusion offers the option to pad and merge at the same time, or only pad your files without merging. To make these examples easier to follow we will work with simple bed files only containing chromosomes, start and stop positions, we will also focus on padding without merging by using the `--no-merge` flag. But `--padding` can be of course be combined with other options like `--strand-col` and `--feat-col`.
 
-When merging it is important to note that the regions as padded before they are merged. So if `--padding` is used together with `--overlap`, padding is added first, and then the overlap will be considered when merging the regions.
+It is important to note that the regions are padded before they are merged. So if `--padding` is used together with `--overlap`, padding is added first, and then the overlap will be considered when merging the regions.
 
 Example bed files 
 
@@ -33,7 +33,7 @@ Example FASTA index file `examples/test.fasta.fai`:
 
 ## Padding Type Error (Default)
 
-Error is the safest padding option and will only pad regions present in the provided FASTA index file, and will immediately fail if it encounters a chromosome that is not present in the FASTA index file.
+Error is the safest padding option and will only pad regions present in the provided FASTA index file. If a chromosome is not present in the FASTA index file it will immediately fail.
 
 Example of padding when all chromosomes are present in the FASTA index file:
 
@@ -62,7 +62,7 @@ bedfusion: error: while padding: chromosome 2 is not in fasta index file example
 
 ## Padding Type Warning
 
-Warning is the next safest padding option and will only pad regions present in the provided FASTA index file. It will NOT add padding for chromosomes not present in the FASTA index file, but warn about the user about them.
+Warning is the next safest padding option and will only pad regions present in the provided FASTA index file. It will **NOT** add padding for chromosomes not present in the FASTA index file but warn the user about them.
 
 Example of padding when all chromosomes are present in the FASTA index file:
 
@@ -129,7 +129,7 @@ warning: you are now padding without a fasta index file and might pad regions be
 
 As mentioned above `--padding` and `--overlap` can be used together when merging. If so the padding is added first and then the overlap is considered after.
 
-For example, to get the regions in `examples/padding-test.bed` to be merged together because regions are touching we ned to pad with 6 bp:
+For example, to get the regions in `examples/padding-test.bed` to be merged we need to pad with at least 5 bp:
 
 ``` shell
 > bedfusion examples/padding-test.bed --fasta-idx=examples/test.fasta.fai --padding=5 
@@ -137,7 +137,7 @@ For example, to get the regions in `examples/padding-test.bed` to be merged toge
 10      1       13
 ```
 
-However if we don't touching regions to be merged, only overlapping ones we can adjust this with `--overlap=-1`:
+However, if we don't want touching regions to be merged, only overlapping ones, we can adjust this with `--overlap=-1`:
 
 ``` shell
 > bedfusion examples/padding-test.bed --fasta-idx=examples/test.fasta.fai --padding=5 --overlap=-1

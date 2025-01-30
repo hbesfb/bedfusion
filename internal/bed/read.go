@@ -144,7 +144,7 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 				minNrCols, lineNr, len(cols), lineText)
 		}
 
-		// Put chromosome sizes in map and chr in order
+		// Put chromosome sizes in map and record chromosome order
 		size, err := strconv.Atoi(cols[sizeIdx])
 		if err != nil {
 			return fmt.Errorf("non-int size for chr %s on line %d: %s", cols[chrIdx], lineNr, cols[sizeIdx])
