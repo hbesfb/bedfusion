@@ -66,7 +66,7 @@ func (bf *Bedfile) readBed(file io.Reader) error {
 		// Split line
 		l.Full = strings.Split(lineText, "\t")
 
-		// For the first content line set the number of columns if it is empty
+		// For the first non-header line save the number of columns
 		if lineNr == len(bf.Header)+1 && expectedNrOfCols == 0 {
 			expectedNrOfCols = len(l.Full)
 			if expectedNrOfCols < minNrCols {
