@@ -118,6 +118,7 @@ Example when not using a FASTA index file:
 
 ``` shell
 > bedfusion examples/padding-test2.bed --no-merge --padding-type=force --padding=10
+warning: you are now padding without a fasta index file and might pad regions beyond chromosome borders
 1       1       14
 1       1       18
 1       10      40

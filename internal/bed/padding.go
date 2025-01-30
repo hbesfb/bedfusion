@@ -59,6 +59,8 @@ func (bf Bedfile) paddingWarnings(chrNotInLengthMap []string) {
 		case "force":
 			if bf.FastaIdx != "" {
 				fmt.Fprintf(os.Stderr, "warning: %s, regions on these chromosomes were still padded\n", warnMsg)
+			} else {
+				fmt.Fprintf(os.Stderr, "warning: you are now padding without a fasta index file and might pad regions beyond chromosome borders\n")
 			}
 		}
 	}
