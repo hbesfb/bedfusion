@@ -46,12 +46,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: FailPT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 40, Stop: 61,
@@ -78,12 +80,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 40, Stop: 61,
@@ -110,12 +114,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 40, Stop: 61,
@@ -142,12 +148,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      1000,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: FailPT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 100,
@@ -174,12 +182,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      1000,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 100,
@@ -206,12 +216,14 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      1000,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 100,
@@ -238,6 +250,7 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: FailPT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
 			},
 			shouldFail: true,
@@ -247,11 +260,13 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
 			},
 			expectedBed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
 			},
 		},
@@ -260,11 +275,13 @@ func TestPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
 			},
 			expectedBed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     1000,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 1051,
@@ -320,6 +337,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -333,6 +351,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -346,6 +365,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -359,6 +379,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      1000,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -372,6 +393,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      1000,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -385,6 +407,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      1000,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 			},
 			line: deepCopyLine(testLinesToPad[1]),
@@ -398,6 +421,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: FailPT,
 				Padding:     1000,
+				FirstBase:   1,
 			},
 			line:       deepCopyLine(testLinesToPad[1]),
 			shouldFail: true,
@@ -407,6 +431,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     1000,
+				FirstBase:   1,
 			},
 			line:       deepCopyLine(testLinesToPad[1]),
 			missChrMap: []string{"1"},
@@ -421,6 +446,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     1000,
+				FirstBase:   1,
 			},
 			line:       deepCopyLine(testLinesToPad[1]),
 			missChrMap: []string{"1"},
@@ -467,9 +493,10 @@ func TestPadLine(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			testing: "padding within chromosome",
+			testing: "padding within chromosome, first base 0",
 			bed: Bedfile{
-				Padding: 10,
+				Padding:   10,
+				FirstBase: 0,
 				chrLengthMap: map[string]int{
 					"1": 100,
 				},
@@ -485,9 +512,48 @@ func TestPadLine(t *testing.T) {
 			expectedChrInMap: true,
 		},
 		{
-			testing: "padding beyond chromosome",
+			testing: "padding within chromosome, first base 1",
 			bed: Bedfile{
-				Padding: 1000,
+				Padding:   10,
+				FirstBase: 1,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 40, Stop: 61,
+				Full: []string{"1", "40", "61"},
+			},
+			expectedChrInMap: true,
+		},
+		{
+			testing: "padding beyond chromosome, first base 0",
+			bed: Bedfile{
+				Padding:   1000,
+				FirstBase: 0,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 0, Stop: 100,
+				Full: []string{"1", "0", "100"},
+			},
+			expectedChrInMap: true,
+		},
+		{
+			testing: "padding beyond chromosome, first base 1",
+			bed: Bedfile{
+				Padding:   1000,
+				FirstBase: 1,
 				chrLengthMap: map[string]int{
 					"1": 100,
 				},
@@ -503,9 +569,29 @@ func TestPadLine(t *testing.T) {
 			expectedChrInMap: true,
 		},
 		{
-			testing: "chromosome not part of chrLengthMap",
+			testing: "chromosome not part of chrLengthMap, first base 0",
 			bed: Bedfile{
-				Padding: 10,
+				Padding:   10,
+				FirstBase: 0,
+				chrLengthMap: map[string]int{
+					"2": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 50, Stop: 51,
+				Full: []string{"1", "50", "51"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 40, Stop: 61,
+				Full: []string{"1", "40", "61"},
+			},
+			expectedChrInMap: false,
+		},
+		{
+			testing: "chromosome not part of chrLengthMap, first base 1",
+			bed: Bedfile{
+				Padding:   10,
+				FirstBase: 1,
 				chrLengthMap: map[string]int{
 					"2": 100,
 				},

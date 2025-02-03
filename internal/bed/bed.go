@@ -25,8 +25,9 @@ type Bedfile struct {
 	NoMerge bool `env:"NO_MERGE" group:"merging" cmd:"" help:"Do not merge regions"`
 	Overlap int  `env:"OVERLAP" group:"merging" default:"0" help:"Overlap between regions to be merged. Note that touching regions are merged (e.g. if two regions are on the same chr, and the overlap is they will be merged if one ends at 5 and the other starts at 6). If you don't want touching regions to be merged set overlap to -1"`
 
-	Padding     int    `env:"PADDING" group:"padding" help:"Padding of bed files. Note that padding is done before merging. Must be used together with --fasta-idx (but see --padding-type)"`
 	PaddingType string `env:"PADDING_TYPE" group:"padding" enum:"${failPT},${warnPT},${forcePT}" default:"${failPT}" help:"Padding type. safe = bedfusion will fail if it encounters a chromosome not in the fasta index file, ${warnPT} = will only pad regions in the fasta index file and give a warning about chromosomes not in the fasta index file, ${forcePT} = will pad regardless, if --fasta-idx is set there will be given a warning about the chromosomes not in the fasta index file, if --fasta-idx is not set no warnings will be given"`
+	Padding     int    `env:"PADDING" group:"padding" help:"Padding of bed files. Note that padding is done before merging. Must be used together with --fasta-idx (but see --padding-type)"`
+	FirstBase   int    `env:"FIRST_BASE" group:"padding" default:"0" help:"The start coordinate of the first base on each chromosome"`
 
 	Fission   bool `env:"FISSION" group:"fission" cmd:"" help:"Split regions into smaller regions"`
 	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:"100" help:"Fission region split size in bp. Must be > 0"`
@@ -57,6 +58,9 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	if err := bf.verifyAndHandleFissionInput(); err != nil {
 		return err
 	}
+	if err := bf.verifyFirstBase(); err != nil {
+		return err
+	}
 	bf.handleCCSSorting()
 	bf.cleanPaths()
 	return nil
@@ -66,7 +70,7 @@ func (bf *Bedfile) VerifyAndHandle() error {
 func (bf Bedfile) WarnAboutWrongUnusedVariables() {
 	// Warn about wrong split size if unused
 	if bf.SplitSize <= 0 && !bf.Fission {
-		fmt.Fprintf(os.Stderr, "warning: split size is <= 0: %d\n", bf.SplitSize)
+		fmt.Fprintf(os.Stderr, "warning: --split-size is <= 0: %d\n", bf.SplitSize)
 	}
 }
 
@@ -74,16 +78,16 @@ func (bf Bedfile) WarnAboutWrongUnusedVariables() {
 func (bf *Bedfile) verifyAndHandleColumns() error {
 	if bf.StrandCol != 0 {
 		if bf.StrandCol < stopIdx+1 {
-			return fmt.Errorf("strand column is at position less than 3: %d", bf.StrandCol)
+			return fmt.Errorf("--strand-col is at position less than 3: %d", bf.StrandCol)
 		}
 		if bf.StrandCol == bf.FeatCol {
-			return fmt.Errorf("same column for strand and feature: %d == %d", bf.StrandCol, bf.FeatCol)
+			return fmt.Errorf("--strand-col and --feat-col can not be set to the same column: %d == %d", bf.StrandCol, bf.FeatCol)
 		}
 		bf.StrandCol--
 	}
 	if bf.FeatCol != 0 {
 		if bf.FeatCol < stopIdx+1 {
-			return fmt.Errorf("strand column is at position less than 3: %d", bf.FeatCol)
+			return fmt.Errorf("--feat-col is at position less than 3: %d", bf.FeatCol)
 		}
 		bf.FeatCol--
 	}
@@ -112,8 +116,16 @@ func (bf *Bedfile) verifyAndHandleFissionInput() error {
 		// Give error if fission is true
 		// Warn if fission is not chosen
 		if bf.SplitSize <= 0 {
-			return fmt.Errorf("split size must be > 0: %d", bf.SplitSize)
+			return fmt.Errorf("--split-size must be > 0: %d", bf.SplitSize)
 		}
+	}
+	return nil
+}
+
+// Verify first base input
+func (bf *Bedfile) verifyFirstBase() error {
+	if bf.FirstBase < 0 || bf.FirstBase > 1 {
+		return fmt.Errorf("--first-base must be either 0 or 1: %d", bf.FirstBase)
 	}
 	return nil
 }

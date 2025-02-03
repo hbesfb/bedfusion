@@ -364,12 +364,14 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
 					{
@@ -388,12 +390,14 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType:  WarnPT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
 					{
@@ -412,12 +416,14 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      10,
+				FirstBase:    1,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
 				PaddingType:  ForcePT,
 				Padding:      10,
+				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
 					{
@@ -436,6 +442,7 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: FailPT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			shouldFail: true,
@@ -445,11 +452,13 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			expectedBed: Bedfile{
 				PaddingType: WarnPT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 8,
@@ -471,11 +480,13 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			expectedBed: Bedfile{
 				PaddingType: ForcePT,
 				Padding:     10,
+				FirstBase:   1,
 				Lines: []Line{
 					{
 						Chr: "1", Start: 1, Stop: 40,
@@ -493,6 +504,7 @@ func TestMergeAndPadLines(t *testing.T) {
 			bed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      5,
+				FirstBase:    1,
 				Overlap:      -1,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
@@ -513,6 +525,7 @@ func TestMergeAndPadLines(t *testing.T) {
 			expectedBed: Bedfile{
 				PaddingType:  FailPT,
 				Padding:      5,
+				FirstBase:    1,
 				Overlap:      -1,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{

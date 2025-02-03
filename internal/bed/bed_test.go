@@ -269,6 +269,57 @@ func TestVerifyAndHandleFissionInput(t *testing.T) {
 	}
 }
 
+func TestVerifyFirstBase(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing    string
+		bed        Bedfile
+		shouldFail bool
+	}
+	testCases := []testCase{
+		{
+			testing: "correct first base is 0",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				FirstBase: 0,
+			},
+		},
+		{
+			testing: "correct first base is 1",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				FirstBase: 1,
+			},
+		},
+		{
+			testing: "wrong first base is -1",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				FirstBase: -1,
+			},
+			shouldFail: true,
+		},
+		{
+			testing: "wrong first base is 2",
+			bed: Bedfile{
+				Inputs:    []string{"/some/path/test.bed"},
+				FirstBase: 2,
+			},
+			shouldFail: true,
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			err := tc.bed.verifyFirstBase()
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+		})
+	}
+}
+
 func TestHandleCCSSorting(t *testing.T) {
 	t.Parallel()
 	type testCase struct {

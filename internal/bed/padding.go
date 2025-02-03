@@ -81,8 +81,8 @@ func (bf Bedfile) padLine(l Line) (Line, bool) {
 	line.Stop = line.Stop + bf.Padding
 	// Make sure that the padding does not exceed the chromosome limits
 	chrLength, ok := bf.chrLengthMap[line.Chr]
-	if line.Start < 1 {
-		line.Start = 1
+	if line.Start < bf.FirstBase {
+		line.Start = bf.FirstBase
 	}
 	if ok && line.Stop > chrLength {
 		line.Stop = chrLength
