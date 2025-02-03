@@ -49,13 +49,6 @@ type Line struct {
 	Full   []string
 }
 
-// Bed file constants
-const (
-	chrIdx   = 0
-	startIdx = 1
-	stopIdx  = 2
-)
-
 // Verifies and handles Bedfile input
 func (bf *Bedfile) VerifyAndHandle() error {
 	if err := bf.verifyAndHandleColumns(); err != nil {

@@ -10,6 +10,13 @@ import (
 	"strings"
 )
 
+// Bed file constants
+const (
+	chrIdx   = 0
+	startIdx = 1
+	stopIdx  = 2
+)
+
 // Opening and reading the bed files and optional fasta index file
 func (bf *Bedfile) Read() error {
 	for _, input := range bf.Inputs {
@@ -125,7 +132,8 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 	chrLengthMap := map[string]int{}
 
 	const (
-		sizeIdx = 1
+		chrFIdx  = 0
+		sizeFIdx = 1
 	)
 
 	lineNr := 0
@@ -145,12 +153,12 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 		}
 
 		// Put chromosome sizes in map and record chromosome order
-		size, err := strconv.Atoi(cols[sizeIdx])
+		size, err := strconv.Atoi(cols[sizeFIdx])
 		if err != nil {
-			return fmt.Errorf("non-int size for chr %s on line %d: %s", cols[chrIdx], lineNr, cols[sizeIdx])
+			return fmt.Errorf("non-int size for chr %s on line %d: %s", cols[chrFIdx], lineNr, cols[sizeFIdx])
 		}
-		chrLengthMap[cols[chrIdx]] = size
-		chrOrder = append(chrOrder, cols[chrIdx])
+		chrLengthMap[cols[chrFIdx]] = size
+		chrOrder = append(chrOrder, cols[chrFIdx])
 	}
 	// Check that file is not empty
 	if lineNr == 0 {
