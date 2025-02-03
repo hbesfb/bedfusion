@@ -8,9 +8,6 @@ import (
 	"strings"
 )
 
-// Note that only lowercase is used in this slice
-var humanChrOrder = []string{"1", "chr1", "2", "chr2", "3", "chr3", "4", "chr4", "5", "chr5", "6", "chr6", "7", "chr7", "8", "chr8", "9", "chr9", "10", "chr10", "11", "chr11", "12", "chr12", "13", "chr13", "14", "chr14", "15", "chr15", "16", "chr16", "17", "chr17", "18", "chr18", "19", "chr19", "20", "chr20", "21", "chr21", "X", "chrX", "Y", "chrY", "M", "chrM", "MT", "chrMT"}
-
 // Note that the the user will give the columns with 1-based indexing,
 // but that we convert this to zero-based indexing in .VerifyAndHandle()
 type Bedfile struct {
