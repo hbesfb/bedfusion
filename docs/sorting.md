@@ -178,7 +178,6 @@ Example FASTA index file `examples/test.fasta.fai`:
 
 ``` text
 1	249250621	52	60	61
-2	243199373	253404903	60	61
 10	135534747	1708379889	60	61
 ```
 
