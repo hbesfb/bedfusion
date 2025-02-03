@@ -144,20 +144,20 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			shouldFail: true,
 		},
 		{
-			testing: "padding of type err selected, but missing fasta index file",
+			testing: "padding of type safe selected, but missing fasta index file",
 			bed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
 				Padding:     2,
-				PaddingType: "err",
+				PaddingType: FailPT,
 			},
 			shouldFail: true,
 		},
 		{
-			testing: "padding of type warn selected, but missing fasta index file",
+			testing: "padding of type lax selected, but missing fasta index file",
 			bed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
 				Padding:     2,
-				PaddingType: "warn",
+				PaddingType: WarnPT,
 			},
 			shouldFail: true,
 		},
@@ -166,7 +166,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			bed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
 				Padding:     2,
-				PaddingType: "force",
+				PaddingType: ForcePT,
 			},
 			shouldFail: false,
 		},

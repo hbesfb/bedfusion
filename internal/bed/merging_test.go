@@ -360,15 +360,15 @@ func TestMergeAndPadLines(t *testing.T) {
 			},
 		},
 		{
-			testing: "testMergeChrOnly, padding = 10, paddingType = err, chr in chrLengthMap",
+			testing: "testMergeChrOnly, padding = 10, paddingType = safe, chr in chrLengthMap",
 			bed: Bedfile{
-				PaddingType:  "err",
+				PaddingType:  FailPT,
 				Padding:      10,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType:  "err",
+				PaddingType:  FailPT,
 				Padding:      10,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
@@ -384,15 +384,15 @@ func TestMergeAndPadLines(t *testing.T) {
 			},
 		},
 		{
-			testing: "testMergeChrOnly, padding = 10, paddingType = warn, chr in chrLengthMap",
+			testing: "testMergeChrOnly, padding = 10, paddingType = lax, chr in chrLengthMap",
 			bed: Bedfile{
-				PaddingType:  "warn",
+				PaddingType:  WarnPT,
 				Padding:      10,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType:  "warn",
+				PaddingType:  WarnPT,
 				Padding:      10,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
@@ -410,13 +410,13 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = force, chr in chrLengthMap",
 			bed: Bedfile{
-				PaddingType:  "force",
+				PaddingType:  ForcePT,
 				Padding:      10,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType:  "force",
+				PaddingType:  ForcePT,
 				Padding:      10,
 				chrLengthMap: testChrLengthMap,
 				Lines: []Line{
@@ -432,23 +432,23 @@ func TestMergeAndPadLines(t *testing.T) {
 			},
 		},
 		{
-			testing: "testMergeChrOnly, padding = 10, paddingType = err, chr not in chrLengthMap",
+			testing: "testMergeChrOnly, padding = 10, paddingType = safe, chr not in chrLengthMap",
 			bed: Bedfile{
-				PaddingType: "err",
+				PaddingType: FailPT,
 				Padding:     10,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			shouldFail: true,
 		},
 		{
-			testing: "testMergeChrOnly, padding = 10, paddingType = warn, chr not in chrLengthMap",
+			testing: "testMergeChrOnly, padding = 10, paddingType = lax, chr not in chrLengthMap",
 			bed: Bedfile{
-				PaddingType: "warn",
+				PaddingType: WarnPT,
 				Padding:     10,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			expectedBed: Bedfile{
-				PaddingType: "warn",
+				PaddingType: WarnPT,
 				Padding:     10,
 				Lines: []Line{
 					{
@@ -469,12 +469,12 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = force, chr not in chrLengthMap",
 			bed: Bedfile{
-				PaddingType: "force",
+				PaddingType: ForcePT,
 				Padding:     10,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			expectedBed: Bedfile{
-				PaddingType: "force",
+				PaddingType: ForcePT,
 				Padding:     10,
 				Lines: []Line{
 					{
@@ -491,7 +491,7 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "padding=5 && overlap=-1",
 			bed: Bedfile{
-				PaddingType:  "err",
+				PaddingType:  FailPT,
 				Padding:      5,
 				Overlap:      -1,
 				chrLengthMap: testChrLengthMap,
@@ -511,7 +511,7 @@ func TestMergeAndPadLines(t *testing.T) {
 				},
 			},
 			expectedBed: Bedfile{
-				PaddingType:  "err",
+				PaddingType:  FailPT,
 				Padding:      5,
 				Overlap:      -1,
 				chrLengthMap: testChrLengthMap,

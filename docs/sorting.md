@@ -41,6 +41,8 @@ X       10      11      1       A
 Y       10      11      1       A
 ```
 
+Written in full:
+
 ``` shell
 > bedfusion examples/sort-test.bed --no-merge -s lex
 1       8       9       -1      B
