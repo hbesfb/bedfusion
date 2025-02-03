@@ -39,20 +39,20 @@ Example of padding when all chromosomes are present in the FASTA index file:
 
 ``` shell
 > bedfusion examples/padding-test.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding=10
-1       1       14
-1       1       19
+1       0       14
+1       0       19
 1       10      40
-10      1       18
+10      0       18
 ```
 
 Written in full:
 
 ``` shell
 > bedfusion examples/padding-test.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding-type=safe --padding=10
-1       1       14
-1       1       19
+1       0       14
+1       0       19
 1       10      40
-10      1       18
+10      0       18
 ```
 
 Example where one or more chromosomes are missing in the FASTA index file:
@@ -70,10 +70,10 @@ Example of padding when all chromosomes are present in the FASTA index file:
 
 ``` shell
 > bedfusion examples/padding-test.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding-type=lax --padding=10
-1       1       14
-1       1       19
+1       0       14
+1       0       19
 1       10      40
-10      1       18
+10      0       18
 ```
 
 Example with merging where one or more chromosomes are missing in the FASTA index file:
@@ -81,8 +81,8 @@ Example with merging where one or more chromosomes are missing in the FASTA inde
 ``` shell
 > bedfusion examples/padding-test2.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding-type=lax --padding=10
 warning: chromosomes [2] not in fasta index file examples/test.fasta.fai, no padding was added to regions on these chromosomes
-1       1       14
-1       1       18
+1       0       14
+1       0       18
 1       10      40
 2       5       9
 ```
@@ -97,10 +97,10 @@ Example of padding when all chromosomes are present in the FASTA index file:
 
 ``` shell
 > bedfusion examples/padding-test.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding-type=force --padding=10
-1       1       14
-1       1       19
+1       0       14
+1       0       19
 1       10      40
-10      1       18
+10      0       18
 ```
 
 Example with merging where one or more chromosomes are missing in the FASTA index file:
@@ -108,10 +108,10 @@ Example with merging where one or more chromosomes are missing in the FASTA inde
 ``` shell
 > bedfusion examples/padding-test2.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding-type=force --padding=10
 warning: chromosomes [2] not in fasta index file examples/test.fasta.fai, regions on these chromosomes were still padded
-1       1       14
-1       1       18
+1       0       14
+1       0       18
 1       10      40
-2       1       19
+2       0       19
 ```
 
 Note that the region on chromosome 2 is still padded even if it is missing from the FASTA index file.
@@ -121,10 +121,10 @@ Example when not using a FASTA index file:
 ``` shell
 > bedfusion examples/padding-test2.bed --no-merge --padding-type=force --padding=10
 warning: you are now padding without a fasta index file and might pad regions beyond chromosome borders
-1       1       14
-1       1       18
+1       0       14
+1       0       18
 1       10      40
-2       1       19
+2       0       19
 ```
 
 ## Combined use of `--overlap` and `--padding` when merging bed files
@@ -135,15 +135,30 @@ For example, to get the regions in `examples/padding-test.bed` to be merged we n
 
 ``` shell
 > bedfusion examples/padding-test.bed --fasta-idx=examples/test.fasta.fai --padding=5
-1       1       35
-10      1       13
+1       0       35
+10      0       13
 ```
 
 However, if we don't want touching regions to be merged, only overlapping ones, we can adjust this with `--overlap=-1`:
 
 ``` shell
 > bedfusion examples/padding-test.bed --fasta-idx=examples/test.fasta.fai --padding=5 --overlap=-1
-1       1       14
+1       0       14
 1       15      35
-10      1       13
+10      0       13
 ```
+
+## Setting the start coordinate of the first base 
+
+BedFusion defaults to using 0 (zero-based coordinates), but this can be changes to one-based using the option `--first-base`.
+
+For example:
+
+``` shell
+> bedfusion examples/padding-test.bed --no-merge --fasta-idx=examples/test.fasta.fai --padding=10 --first-base=1
+1       1       14
+1       1       19
+1       10      40
+10      1       18
+```
+
