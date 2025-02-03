@@ -490,6 +490,7 @@ func TestPadLine(t *testing.T) {
 		line             Line
 		expectedLine     Line
 		expectedChrInMap bool
+		shouldFail       bool
 	}
 	testCases := []testCase{
 		{
@@ -606,21 +607,60 @@ func TestPadLine(t *testing.T) {
 			},
 			expectedChrInMap: false,
 		},
+		{
+			testing: "negative padding, first base 1",
+			bed: Bedfile{
+				Padding:   -10,
+				FirstBase: 1,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 40, Stop: 70,
+				Full: []string{"1", "40", "70"},
+			},
+			expectedLine: Line{
+				Chr: "1", Start: 50, Stop: 60,
+				Full: []string{"1", "50", "60"},
+			},
+			expectedChrInMap: true,
+		},
+		{
+			testing: "negative padding where region would be flipped",
+			bed: Bedfile{
+				Padding:   -100,
+				FirstBase: 0,
+				chrLengthMap: map[string]int{
+					"1": 100,
+				},
+			},
+			line: Line{
+				Chr: "1", Start: 40, Stop: 70,
+				Full: []string{"1", "40", "70"},
+			},
+			shouldFail: true,
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
 			deepCopiedLine := deepCopyLine(tc.line)
-			paddedLine, chrInMap := tc.bed.padLine(tc.line)
-			if diff := deep.Equal(tc.expectedLine, paddedLine); diff != nil {
-				t.Error("expected VS received line", diff)
+			paddedLine, chrInMap, err := tc.bed.padLine(tc.line)
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
 			}
-			if (!tc.expectedChrInMap && chrInMap) || (tc.expectedChrInMap && !chrInMap) {
-				t.Fatalf("expectedChrInMap is %t, but chrInMap is %t", tc.expectedChrInMap, chrInMap)
-			}
-			if diff := deep.Equal(deepCopiedLine, tc.line); diff != nil {
-				t.Error("deep copy test, expected VS received line", diff)
+			if !tc.shouldFail {
+				if diff := deep.Equal(tc.expectedLine, paddedLine); diff != nil {
+					t.Error("expected VS received line", diff)
+				}
+				if (!tc.expectedChrInMap && chrInMap) || (tc.expectedChrInMap && !chrInMap) {
+					t.Fatalf("expectedChrInMap is %t, but chrInMap is %t", tc.expectedChrInMap, chrInMap)
+				}
+				if diff := deep.Equal(deepCopiedLine, tc.line); diff != nil {
+					t.Error("deep copy test, expected VS received line", diff)
+				}
 			}
 		})
 	}

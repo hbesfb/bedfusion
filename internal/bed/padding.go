@@ -35,7 +35,10 @@ func (bf Bedfile) padAccordingToPaddingType(line Line, chrNotInLengthMap []strin
 		return Line{}, nil, fmt.Errorf("unknown padding type %s", bf.PaddingType)
 	}
 	// Pad line
-	paddedLine, chrInMap := bf.padLine(line)
+	paddedLine, chrInMap, err := bf.padLine(line)
+	if err != nil {
+		return Line{}, nil, err
+	}
 	if !chrInMap {
 		switch bf.PaddingType {
 		case FailPT:
@@ -67,7 +70,8 @@ func (bf Bedfile) paddingWarnings(chrNotInLengthMap []string) {
 }
 
 // Pad single line
-func (bf Bedfile) padLine(l Line) (Line, bool) {
+func (bf Bedfile) padLine(l Line) (Line, bool, error) {
+	var err error
 	// Deep line to make sure we do not overwrite
 	fullLineCopy := make([]string, len(l.Full))
 	_ = copy(fullLineCopy, l.Full)
@@ -79,6 +83,11 @@ func (bf Bedfile) padLine(l Line) (Line, bool) {
 	// Line
 	line.Start = line.Start - bf.Padding
 	line.Stop = line.Stop + bf.Padding
+	// Make sure we do not end up with a flipped region if negative padding has been used
+	if line.Start >= line.Stop {
+		err = fmt.Errorf("padding with %d will results in start >= stop for: %v", bf.Padding, line.Full)
+		return Line{}, false, err
+	}
 	// Make sure that the padding does not exceed the chromosome limits
 	chrLength, ok := bf.chrLengthMap[line.Chr]
 	if line.Start < bf.FirstBase {
@@ -89,5 +98,5 @@ func (bf Bedfile) padLine(l Line) (Line, bool) {
 	}
 	line.Full[startIdx] = strconv.Itoa(line.Start)
 	line.Full[stopIdx] = strconv.Itoa(line.Stop)
-	return line, ok
+	return line, ok, err
 }
