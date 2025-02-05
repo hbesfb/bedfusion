@@ -214,7 +214,7 @@ func TestVerifySplitSizeInput(t *testing.T) {
 			},
 		},
 		{
-			testing: "fission not used, split size is < 0",
+			testing: "split size is < 0",
 			bed: Bedfile{
 				SplitSize: -1,
 				Inputs:    []string{"/some/path/test.bed"},
