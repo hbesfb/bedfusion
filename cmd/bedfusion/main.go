@@ -18,11 +18,6 @@ func (s *session) Validate() error {
 	if err := s.Bedfile.VerifyAndHandle(); err != nil {
 		return err
 	}
-	// Give warnings about wrong unused variables if a
-	// config file is used
-	if s.ConfigFile != "" {
-		s.Bedfile.WarnAboutWrongUnusedVariables()
-	}
 	return nil
 }
 
@@ -60,6 +55,10 @@ func (s *session) run() (error, string) {
 		if err := s.Bedfile.MergeAndPadLines(); err != nil {
 			return err, "while padding"
 		}
+		// Split lines
+		if s.Bedfile.SplitSize > 0 {
+			s.Bedfile.SplitLines()
+		}
 	} else {
 		// Pad lines
 		if s.Bedfile.Padding != 0 {
@@ -67,8 +66,8 @@ func (s *session) run() (error, string) {
 				return err, "while padding"
 			}
 		}
-		// Fission
-		if s.Bedfile.Fission {
+		// Split lines
+		if s.Bedfile.SplitSize > 0 {
 			s.Bedfile.SplitLines()
 		}
 		// Deduplicate

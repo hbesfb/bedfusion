@@ -2,7 +2,6 @@ package bed
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -28,8 +27,7 @@ type Bedfile struct {
 	Padding     int    `env:"PADDING" group:"padding" help:"Padding in bp. Note that padding is done before merging"`
 	FirstBase   int    `env:"FIRST_BASE" group:"padding" default:"0" help:"The start coordinate of the first base on each chromosome"`
 
-	Fission   bool `env:"FISSION" group:"fission" cmd:"" help:"Split regions into smaller regions"`
-	SplitSize int  `env:"SPLIT_SIZE" group:"fission" default:"100" help:"Fission region split size in bp. Must be > 0"`
+	SplitSize int `env:"SPLIT_SIZE" group:"splitting" help:"Size of split regions in bp. Will be done after merging."`
 
 	Header       []string `kong:"-"`
 	Lines        []Line   `kong:"-"`
@@ -54,7 +52,7 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	if err := bf.verifyFastaIdxCombinations(); err != nil {
 		return err
 	}
-	if err := bf.verifyAndHandleFissionInput(); err != nil {
+	if err := bf.verifySplitSizeInput(); err != nil {
 		return err
 	}
 	if err := bf.verifyFirstBase(); err != nil {
@@ -63,14 +61,6 @@ func (bf *Bedfile) VerifyAndHandle() error {
 	bf.handleCCSSorting()
 	bf.cleanPaths()
 	return nil
-}
-
-// Give warnings for wrong unused variables
-func (bf Bedfile) WarnAboutWrongUnusedVariables() {
-	// Warn about wrong split size if unused
-	if bf.SplitSize <= 0 && !bf.Fission {
-		fmt.Fprintf(os.Stderr, "warning: --split-size is <= 0: %d\n", bf.SplitSize)
-	}
 }
 
 // Verifies Strand and Feat columns and subtracts 1 to be able to use zero-based indexing
@@ -106,17 +96,10 @@ func (bf Bedfile) verifyFastaIdxCombinations() error {
 	return nil
 }
 
-// Verify split size if used
-func (bf *Bedfile) verifyAndHandleFissionInput() error {
-	// If fission is selected we will not merge
-	if bf.Fission {
-		bf.NoMerge = true
-		// Check that SplitSize is bigger than 0
-		// Give error if fission is true
-		// Warn if fission is not chosen
-		if bf.SplitSize <= 0 {
-			return fmt.Errorf("--split-size must be > 0: %d", bf.SplitSize)
-		}
+// Verify split size input
+func (bf Bedfile) verifySplitSizeInput() error {
+	if bf.SplitSize < 0 {
+		return fmt.Errorf("--split-size must be > 0: %d", bf.SplitSize)
 	}
 	return nil
 }
