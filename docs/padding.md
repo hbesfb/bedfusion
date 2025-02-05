@@ -1,6 +1,6 @@
 # Padding
 
-BedFusion offers the option to pad and merge at the same time, or only pad your files without merging. To make these examples easier to follow we will work with simple bed files only containing chromosomes, start and stop positions, we will also focus on padding without merging by using the `--no-merge` flag. But `--padding` can be of course be combined with other options like `--strand-col` and `--feat-col`.
+BedFusion offers the option to pad and [merge](./merging.md) at the same time, or only pad your files without merging. To make these examples easier to follow we will work with simple bed files only containing chromosomes, start and stop positions, we will also focus on padding without merging by using the `--no-merge` flag. But `--padding` can be of course be combined with other options like `--strand-col` and `--feat-col`.
 
 It is important to note that the regions are padded before they are merged. So if `--padding` is used together with `--overlap`, padding is added first, and then the overlap will be considered when merging the regions.
 
