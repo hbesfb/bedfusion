@@ -166,7 +166,7 @@ func (bf *Bedfile) readFastaIdx(file io.Reader) error {
 	}
 
 	// Overwrite chr order map if --sorting-type=fidx
-	if bf.SortType == "fidx" {
+	if bf.SortType == FidxST {
 		bf.chrOrderMap = chrOrderToMap(chrOrder)
 	}
 	bf.chrLengthMap = chrLengthMap

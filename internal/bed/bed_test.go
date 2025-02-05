@@ -123,7 +123,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			bed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
 				FastaIdx: "/some/fasta/idx/file.fasta.fai",
-				SortType: "fidx",
+				SortType: FidxST,
 			},
 		},
 		{
@@ -132,7 +132,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 				Inputs:   []string{"/some/path/test.bed"},
 				FastaIdx: "/some/fasta/idx/file.fasta.fai",
 				Padding:  2,
-				SortType: "fidx",
+				SortType: FidxST,
 			},
 		},
 		{
@@ -175,7 +175,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			bed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
 				FastaIdx: "/some/fasta/idx/file.fasta.fai",
-				SortType: "fidx",
+				SortType: FidxST,
 			},
 		},
 	}
@@ -332,11 +332,11 @@ func TestHandleCCSSorting(t *testing.T) {
 			testing: "sortType is ccs, and chrOrder is empty",
 			bed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
-				SortType: "ccs",
+				SortType: CcsST,
 			},
 			expectedBed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
-				SortType:    "ccs",
+				SortType:    CcsST,
 				ChrOrder:    humanChrOrder,
 				chrOrderMap: chrOrderToMap(humanChrOrder),
 			},
@@ -345,12 +345,12 @@ func TestHandleCCSSorting(t *testing.T) {
 			testing: "sortType is ccs, and is set",
 			bed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
-				SortType: "ccs",
+				SortType: CcsST,
 				ChrOrder: []string{"4", "3", "2", "1"},
 			},
 			expectedBed: Bedfile{
 				Inputs:   []string{"/some/path/test.bed"},
-				SortType: "ccs",
+				SortType: CcsST,
 				ChrOrder: []string{"4", "3", "2", "1"},
 				chrOrderMap: map[string]int{
 					"4": 1,

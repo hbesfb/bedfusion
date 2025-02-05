@@ -633,7 +633,7 @@ func TestReadfastaIdx(t *testing.T) {
 			testing: "sort-type==fidx",
 			bed: Bedfile{
 				FastaIdx: "test.fasta.fai",
-				SortType: "fidx",
+				SortType: FidxST,
 			},
 			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
 				"2\t243199373\t253404903\t60\t61\n" +
@@ -641,7 +641,7 @@ func TestReadfastaIdx(t *testing.T) {
 				"4\t191154276\t701980507\t60\t61\n",
 			expectedBed: Bedfile{
 				FastaIdx: "test.fasta.fai",
-				SortType: "fidx",
+				SortType: FidxST,
 				chrLengthMap: map[string]int{
 					"1": 249250621,
 					"2": 243199373,

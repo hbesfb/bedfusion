@@ -34,6 +34,12 @@ func main() {
 			"BedFusion follows the bed file standard outlined in: https://github.com/samtools/hts-specs/blob/94500cf76f049e898dec7af23097d877fde5894e/BEDv1.pdf \n\n"+
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
 		kong.Vars{
+			// Sorting types
+			"lexST":  bed.LexST,
+			"natST":  bed.NatST,
+			"ccsST":  bed.CcsST,
+			"fidxST": bed.FidxST,
+			// Padding types
 			"failPT":  bed.SafePT,
 			"warnPT":  bed.LaxPT,
 			"forcePT": bed.ForcePT,
