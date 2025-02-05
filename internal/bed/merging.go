@@ -6,11 +6,22 @@ import (
 	"strings"
 )
 
-// Merge lines in bed file
-func (bf *Bedfile) MergeLines() {
+// Merge and pad lines in bed file
+func (bf *Bedfile) MergeAndPadLines() error {
 	var merged Line
 	var mergedLines []Line
+	var chrNotInLengthMap []string
 	for i, l := range mergeSort(bf.Lines) {
+		// Pad line
+		if bf.Padding != 0 {
+			var err error
+			l, chrNotInLengthMap, err = bf.padAccordingToPaddingType(l, chrNotInLengthMap)
+			if err != nil {
+				return err
+			}
+		}
+
+		// Merge lines
 		// If the lines are overlapping or touching merge them
 		if i != 0 &&
 			merged.Chr == l.Chr &&
@@ -45,8 +56,13 @@ func (bf *Bedfile) MergeLines() {
 			}
 		}
 	}
+	// If we have been padding print padding warnings
+	if bf.Padding != 0 {
+		bf.paddingWarnings(chrNotInLengthMap)
+	}
 	// Replace lines in Bedfile
 	bf.Lines = append(mergedLines, merged)
+	return nil
 }
 
 // Returns true or false depending on if the string

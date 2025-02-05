@@ -41,6 +41,8 @@ X       10      11      1       A
 Y       10      11      1       A
 ```
 
+Written in full:
+
 ``` shell
 > bedfusion examples/sort-test.bed --no-merge -s lex
 1       8       9       -1      B
@@ -168,6 +170,51 @@ MT      10      11      1       A
 
 Please note that the provided chromosome order is case insensitive.
 
+## FASTA Index File Sorting 
+
+FASTA index file sorting lets you sort the chromosomes according to the two first columns of a FASTA index file. Chromosomes not in the file will be sorted naturally after the ones in the file.
+
+Example FASTA index file `examples/test.fasta.fai`: 
+
+``` text
+1	249250621	52	60	61
+10	135534747	1708379889	60	61
+```
+
+Example: 
+
+``` shell
+> bedfusion examples/sort-test.bed --no-merge -s fidx --fasta-idx=examples/test.fasta.fai 
+1       8       9       -1      B
+1       10      11      -1      A
+1       10      11      1       A
+1       10      11      -1      B
+1       12      13      1       A
+10      12      13      1       D
+2       12      13      1       C
+GL000209.1      10      11      1       A
+MT      10      11      1       A
+X       10      11      1       A
+Y       10      11      1       A
+```
+
+Using the `--strand-col` and/or `--feat-col` options these column will also be sorted. If `--feat-col` is set the feature column will be sorted using natural sorting:
+
+``` shell 
+> bedfusion examples/sort-test.bed --no-merge -s fidx --fasta-idx=examples/test.fasta.fai --strand-col=4 --feat-col=5
+1       8       9       -1      B
+1       10      11      -1      A
+1       10      11      -1      B
+1       10      11      1       A
+1       12      13      1       A
+10      12      13      1       D
+2       12      13      1       C
+GL000209.1      10      11      1       A
+MT      10      11      1       A
+X       10      11      1       A
+Y       10      11      1       A
+```
+
 ## Deduplication 
 
 When choosing not to merge the bed regions (by using the flag `--no-merge`) one might still want to remove duplicates.
@@ -175,6 +222,7 @@ When choosing not to merge the bed regions (by using the flag `--no-merge`) one 
 Lets pretend that we copy the `examples/sort-test.bed` file and call this copy `examples/sort-test-copy.bed`, and provide both as input to BedFusion:
 
 Without the flag `--deduplicate/-d`:
+
 ``` shell
 > bedfusion examples/sort-test.bed examples/sort-test-copy.bed --no-merge
 1       8       9       -1      B
@@ -202,6 +250,7 @@ Y       10      11      1       A
 ```
 
 With the flag `--deduplicate/-d`:
+
 ``` shell
 > bedfusion examples/sort-test.bed sort-test-copy.bed --no-merge -d 
 1       8       9       -1      B

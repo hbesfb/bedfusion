@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/alecthomas/kong"
-
 	kongyaml "github.com/alecthomas/kong-yaml"
 
 	"github.com/hbesfb/bedfusion/internal/bed"
@@ -17,6 +13,19 @@ type session struct {
 	ctx        *kong.Context
 }
 
+// Validate bed input
+func (s *session) Validate() error {
+	if err := s.Bedfile.VerifyAndHandle(); err != nil {
+		return err
+	}
+	// Give warnings about wrong unused variables if a
+	// config file is used
+	if s.ConfigFile != "" {
+		s.Bedfile.WarnAboutWrongUnusedVariables()
+	}
+	return nil
+}
+
 func main() {
 	var s session
 	// Getting variables
@@ -24,39 +33,56 @@ func main() {
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
 			"BedFusion follows the bed file standard outlined in: https://github.com/samtools/hts-specs/blob/94500cf76f049e898dec7af23097d877fde5894e/BEDv1.pdf \n\n"+
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
+		kong.Vars{
+			// Sorting types
+			"lexST":  bed.LexST,
+			"natST":  bed.NatST,
+			"ccsST":  bed.CcsST,
+			"fidxST": bed.FidxST,
+			// Padding types
+			"failPT":  bed.SafePT,
+			"warnPT":  bed.LaxPT,
+			"forcePT": bed.ForcePT,
+		},
 		kong.Configuration(kongyaml.Loader),
 		kong.UsageOnError(),
 	)
-	// Verify and handle bed file input
-	if err := s.Bedfile.VerifyAndHandle(); err != nil {
-		fmt.Fprintf(os.Stderr, "error upon verification: %q\n", err)
-		s.ctx.Exit(1)
-	}
+	s.ctx.FatalIfErrorf(s.run())
+}
+
+func (s *session) run() (error, string) {
 	// Read bed file
 	if err := s.Bedfile.Read(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while reading: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while reading"
 	}
-	// Merge
-	if !s.Bedfile.NoMerge && !s.Bedfile.Fission {
-		s.Bedfile.MergeLines()
-	}
-	// Fission
-	if s.Bedfile.Fission {
-		s.Bedfile.SplitLines()
-	}
-	// Deduplicate if chosen and we have not merged
-	if s.Bedfile.Deduplicate && s.Bedfile.NoMerge {
-		s.Bedfile.DeduplicateLines()
+	if !s.Bedfile.NoMerge {
+		// Merge and pad lines
+		if err := s.Bedfile.MergeAndPadLines(); err != nil {
+			return err, "while padding"
+		}
+	} else {
+		// Pad lines
+		if s.Bedfile.Padding != 0 {
+			if err := s.Bedfile.PadLines(); err != nil {
+				return err, "while padding"
+			}
+		}
+		// Fission
+		if s.Bedfile.Fission {
+			s.Bedfile.SplitLines()
+		}
+		// Deduplicate
+		if s.Bedfile.Deduplicate {
+			s.Bedfile.DeduplicateLines()
+		}
 	}
 	// Sort
 	if err := s.Bedfile.Sort(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while sorting: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while sorting"
 	}
 	// Write output
 	if err := s.Bedfile.Write(); err != nil {
-		fmt.Fprintf(os.Stderr, "error while writing: %q\n", err)
-		s.ctx.Exit(1)
+		return err, "while writing"
 	}
+	return nil, ""
 }

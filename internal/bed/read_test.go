@@ -7,7 +7,7 @@ import (
 	"github.com/go-test/deep"
 )
 
-func TestRead(t *testing.T) {
+func TestReadBed(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		testing        string
@@ -587,7 +587,159 @@ func TestRead(t *testing.T) {
 		tc := tc
 		t.Run(tc.testing, func(t *testing.T) {
 			t.Parallel()
-			err := tc.bed.read(strings.NewReader(tc.bedFileContent))
+			err := tc.bed.readBed(strings.NewReader(tc.bedFileContent))
+			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
+				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
+			}
+			if !tc.shouldFail {
+				if diff := deep.Equal(tc.expectedBed, tc.bed); diff != nil {
+					t.Error("expected VS received bed", diff)
+				}
+			}
+		})
+	}
+}
+
+func TestReadfastaIdx(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		testing             string
+		bed                 Bedfile
+		fastaIdxFileContent string
+		expectedBed         Bedfile
+		shouldFail          bool
+	}
+	testCases := []testCase{
+		{
+			testing: "fasta index file",
+			bed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+			},
+			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
+				"2\t243199373\t253404903\t60\t61\n" +
+				"3\t198022430\t500657651\t60\t61\n" +
+				"4\t191154276\t701980507\t60\t61\n",
+			expectedBed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+				chrLengthMap: map[string]int{
+					"1": 249250621,
+					"2": 243199373,
+					"3": 198022430,
+					"4": 191154276,
+				},
+			},
+		},
+		{
+			testing: "sort-type==fidx",
+			bed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+				SortType: FidxST,
+			},
+			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
+				"2\t243199373\t253404903\t60\t61\n" +
+				"3\t198022430\t500657651\t60\t61\n" +
+				"4\t191154276\t701980507\t60\t61\n",
+			expectedBed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+				SortType: FidxST,
+				chrLengthMap: map[string]int{
+					"1": 249250621,
+					"2": 243199373,
+					"3": 198022430,
+					"4": 191154276,
+				},
+				chrOrderMap: map[string]int{
+					"1": 1,
+					"2": 2,
+					"3": 3,
+					"4": 4,
+				},
+			},
+		},
+		{
+			testing: "only two columns",
+			bed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+			},
+			fastaIdxFileContent: "1\t249250621\n" +
+				"2\t243199373\n" +
+				"3\t198022430\n" +
+				"4\t191154276\n",
+			expectedBed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+				chrLengthMap: map[string]int{
+					"1": 249250621,
+					"2": 243199373,
+					"3": 198022430,
+					"4": 191154276,
+				},
+			},
+		},
+		{
+			testing: "changing nr of columns",
+			bed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+			},
+			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
+				"2\t243199373\t253404903\t60\t61\n" +
+				"3\t198022430\t500657651\n" +
+				"4\t191154276\t701980507\t60\t61\n",
+			expectedBed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+				chrLengthMap: map[string]int{
+					"1": 249250621,
+					"2": 243199373,
+					"3": 198022430,
+					"4": 191154276,
+				},
+			},
+		},
+		{
+			testing: "missing columns",
+			bed: Bedfile{
+				FastaIdx: "test.fasta.fai",
+			},
+			fastaIdxFileContent: "1\n" +
+				"2\n" +
+				"3\n" +
+				"4\n",
+			shouldFail: true,
+		},
+		{
+			testing: "one row with missing columns",
+			bed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+			},
+			fastaIdxFileContent: "1\t249250621\t52\t60\t61\n" +
+				"2\t243199373\t253404903\t60\t61\n" +
+				"3\n" +
+				"4\t191154276\t701980507\t60\t61\n",
+			shouldFail: true,
+		},
+		{
+			testing: "size not an int",
+			bed: Bedfile{
+				FastaIdx: "test-chr-size.txt",
+			},
+			fastaIdxFileContent: "1\t249250621\n" +
+				"2\tsmall\n" +
+				"3\tmedium\n" +
+				"4\tlarge\n",
+			shouldFail: true,
+		},
+		{
+			testing: "empty fasta idx file",
+			bed: Bedfile{
+				FastaIdx: "empty.fasta.fai",
+			},
+			shouldFail: true,
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testing, func(t *testing.T) {
+			t.Parallel()
+			err := tc.bed.readFastaIdx(strings.NewReader(tc.fastaIdxFileContent))
 			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
 				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
 			}
