@@ -7,8 +7,8 @@ import (
 )
 
 // Padding types
-var FailPT = "safe"   // Will fail if chr is not in fasta index
-var WarnPT = "lax"    // Will ONLY pad regions on chr in fasta index, warn about others
+var SafePT = "safe"   // Will fail if chr is not in fasta index
+var LaxPT = "lax"     // Will ONLY pad regions on chr in fasta index, warn about others
 var ForcePT = "force" // Will pad everything, fasta index optional (will warn if chr not in fasta index if supplied)
 
 // Pad regions
@@ -31,7 +31,7 @@ func (bf *Bedfile) PadLines() error {
 // Handle missing chromosome in chromosome length map
 func (bf Bedfile) padAccordingToPaddingType(line Line, chrNotInLengthMap []string) (Line, []string, error) {
 	// Check padding type
-	if !stringInSlice([]string{FailPT, WarnPT, ForcePT}, bf.PaddingType) {
+	if !stringInSlice([]string{SafePT, LaxPT, ForcePT}, bf.PaddingType) {
 		return Line{}, nil, fmt.Errorf("unknown padding type %s", bf.PaddingType)
 	}
 	// Pad line
@@ -41,9 +41,9 @@ func (bf Bedfile) padAccordingToPaddingType(line Line, chrNotInLengthMap []strin
 	}
 	if !chrInMap {
 		switch bf.PaddingType {
-		case FailPT:
+		case SafePT:
 			return Line{}, nil, fmt.Errorf("chromosome %s is not in fasta index file %s", line.Chr, bf.FastaIdx)
-		case WarnPT:
+		case LaxPT:
 			paddedLine = line
 		}
 		chrNotInLengthMap = append(chrNotInLengthMap, line.Chr)
@@ -57,7 +57,7 @@ func (bf Bedfile) paddingWarnings(chrNotInLengthMap []string) {
 		warnMsg := fmt.Sprintf("chromosomes %v not in fasta index file %s",
 			sortAndDeduplicateListOfStrings(chrNotInLengthMap), bf.FastaIdx)
 		switch bf.PaddingType {
-		case WarnPT:
+		case LaxPT:
 			fmt.Fprintf(os.Stderr, "warning: %s, no padding was added to regions on these chromosomes\n", warnMsg)
 		case ForcePT:
 			if bf.FastaIdx != "" {

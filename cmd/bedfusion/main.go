@@ -34,8 +34,8 @@ func main() {
 			"BedFusion follows the bed file standard outlined in: https://github.com/samtools/hts-specs/blob/94500cf76f049e898dec7af23097d877fde5894e/BEDv1.pdf \n\n"+
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
 		kong.Vars{
-			"failPT":  bed.FailPT,
-			"warnPT":  bed.WarnPT,
+			"failPT":  bed.SafePT,
+			"warnPT":  bed.LaxPT,
 			"forcePT": bed.ForcePT,
 		},
 		kong.Configuration(kongyaml.Loader),

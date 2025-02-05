@@ -44,14 +44,14 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding within chromosome, no missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      10,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 				Padding:     10,
 				FirstBase:   1,
 				Lines: []Line{
@@ -78,14 +78,14 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding within chromosome, no missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      10,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     10,
 				FirstBase:   1,
 				Lines: []Line{
@@ -146,14 +146,14 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, no missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      1000,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 				Padding:     1000,
 				FirstBase:   1,
 				Lines: []Line{
@@ -180,14 +180,14 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, no missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      1000,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testLinesToPad),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     1000,
 				FirstBase:   1,
 				Lines: []Line{
@@ -248,7 +248,7 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, all missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 				Padding:     1000,
 				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
@@ -258,13 +258,13 @@ func TestPadLines(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, all missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     1000,
 				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
 			},
 			expectedBed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     1000,
 				FirstBase:   1,
 				Lines:       deepCopyLines(testLinesToPad),
@@ -335,7 +335,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding within chromosome, no missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      10,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -349,7 +349,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding within chromosome, no missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      10,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -377,7 +377,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, no missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      1000,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -391,7 +391,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, no missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      1000,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -419,7 +419,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, all missing, paddingType=safe",
 			bed: Bedfile{
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 				Padding:     1000,
 				FirstBase:   1,
 			},
@@ -429,7 +429,7 @@ func TestPadLineAccordingToPaddingType(t *testing.T) {
 		{
 			testing: "padding beyond chromosome, all missing, paddingType=lax",
 			bed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     1000,
 				FirstBase:   1,
 			},

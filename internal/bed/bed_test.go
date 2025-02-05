@@ -148,7 +148,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			bed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
 				Padding:     2,
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 			},
 			shouldFail: true,
 		},
@@ -157,7 +157,7 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 			bed: Bedfile{
 				Inputs:      []string{"/some/path/test.bed"},
 				Padding:     2,
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 			},
 			shouldFail: true,
 		},

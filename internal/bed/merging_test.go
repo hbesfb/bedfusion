@@ -362,14 +362,14 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = safe, chr in chrLengthMap",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      10,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      10,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -388,14 +388,14 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = lax, chr in chrLengthMap",
 			bed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      10,
 				FirstBase:    1,
 				Lines:        deepCopyLines(testMergeChrOnly),
 				chrLengthMap: testChrLengthMap,
 			},
 			expectedBed: Bedfile{
-				PaddingType:  WarnPT,
+				PaddingType:  LaxPT,
 				Padding:      10,
 				FirstBase:    1,
 				chrLengthMap: testChrLengthMap,
@@ -440,7 +440,7 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = safe, chr not in chrLengthMap",
 			bed: Bedfile{
-				PaddingType: FailPT,
+				PaddingType: SafePT,
 				Padding:     10,
 				FirstBase:   1,
 				Lines:       deepCopyLines(testMergeChrOnly),
@@ -450,13 +450,13 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "testMergeChrOnly, padding = 10, paddingType = lax, chr not in chrLengthMap",
 			bed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     10,
 				FirstBase:   1,
 				Lines:       deepCopyLines(testMergeChrOnly),
 			},
 			expectedBed: Bedfile{
-				PaddingType: WarnPT,
+				PaddingType: LaxPT,
 				Padding:     10,
 				FirstBase:   1,
 				Lines: []Line{
@@ -502,7 +502,7 @@ func TestMergeAndPadLines(t *testing.T) {
 		{
 			testing: "padding=5 && overlap=-1",
 			bed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      5,
 				FirstBase:    1,
 				Overlap:      -1,
@@ -523,7 +523,7 @@ func TestMergeAndPadLines(t *testing.T) {
 				},
 			},
 			expectedBed: Bedfile{
-				PaddingType:  FailPT,
+				PaddingType:  SafePT,
 				Padding:      5,
 				FirstBase:    1,
 				Overlap:      -1,
