@@ -27,7 +27,7 @@ type Bedfile struct {
 	Padding     int    `env:"PADDING" group:"padding" help:"Padding in bp. Note that padding is done before merging"`
 	FirstBase   int    `env:"FIRST_BASE" group:"padding" default:"0" help:"The start coordinate of the first base on each chromosome"`
 
-	SplitSize int `env:"SPLIT_SIZE" group:"splitting" help:"Size of split regions in bp. Will be done after merging."`
+	SplitSize int `env:"SPLIT_SIZE" group:"splitting" help:"Size of split regions in bp. Splitting is done after padding and merging."`
 
 	Header       []string `kong:"-"`
 	Lines        []Line   `kong:"-"`
