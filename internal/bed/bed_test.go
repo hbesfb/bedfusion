@@ -191,49 +191,6 @@ func TestVerifyFastaIdxCombinations(t *testing.T) {
 	}
 }
 
-func TestVerifySplitSizeInput(t *testing.T) {
-	t.Parallel()
-	type testCase struct {
-		testing    string
-		bed        Bedfile
-		shouldFail bool
-	}
-	testCases := []testCase{
-		{
-			testing: "split size is 0 (not used)",
-			bed: Bedfile{
-				Inputs:    []string{"/some/path/test.bed"},
-				SplitSize: 0,
-			},
-		},
-		{
-			testing: "split size is 100",
-			bed: Bedfile{
-				SplitSize: 100,
-				Inputs:    []string{"/some/path/test.bed"},
-			},
-		},
-		{
-			testing: "split size is < 0",
-			bed: Bedfile{
-				SplitSize: -1,
-				Inputs:    []string{"/some/path/test.bed"},
-			},
-			shouldFail: true,
-		},
-	}
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(tc.testing, func(t *testing.T) {
-			t.Parallel()
-			err := tc.bed.verifySplitSizeInput()
-			if (!tc.shouldFail && err != nil) || (tc.shouldFail && err == nil) {
-				t.Fatalf("shouldFail is %t, but err is %q", tc.shouldFail, err)
-			}
-		})
-	}
-}
-
 func TestVerifyFirstBase(t *testing.T) {
 	t.Parallel()
 	type testCase struct {

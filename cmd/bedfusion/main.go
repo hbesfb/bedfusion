@@ -55,20 +55,12 @@ func (s *session) run() (error, string) {
 		if err := s.Bedfile.MergeAndPadLines(); err != nil {
 			return err, "while padding"
 		}
-		// Split lines
-		if s.Bedfile.SplitSize > 0 {
-			s.Bedfile.SplitLines()
-		}
 	} else {
 		// Pad lines
 		if s.Bedfile.Padding != 0 {
 			if err := s.Bedfile.PadLines(); err != nil {
 				return err, "while padding"
 			}
-		}
-		// Split lines
-		if s.Bedfile.SplitSize > 0 {
-			s.Bedfile.SplitLines()
 		}
 		// Deduplicate
 		if s.Bedfile.Deduplicate {

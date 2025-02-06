@@ -27,8 +27,6 @@ type Bedfile struct {
 	Padding     int    `env:"PADDING" group:"padding" help:"Padding in bp. Note that padding is done before merging"`
 	FirstBase   int    `env:"FIRST_BASE" group:"padding" default:"0" help:"The start coordinate of the first base on each chromosome"`
 
-	SplitSize int `env:"SPLIT_SIZE" group:"splitting" help:"Size of split regions in bp. Splitting is done after padding and merging."`
-
 	Header       []string `kong:"-"`
 	Lines        []Line   `kong:"-"`
 	chrOrderMap  map[string]int
@@ -50,9 +48,6 @@ func (bf *Bedfile) VerifyAndHandle() error {
 		return err
 	}
 	if err := bf.verifyFastaIdxCombinations(); err != nil {
-		return err
-	}
-	if err := bf.verifySplitSizeInput(); err != nil {
 		return err
 	}
 	if err := bf.verifyFirstBase(); err != nil {
@@ -92,14 +87,6 @@ func (bf Bedfile) verifyFastaIdxCombinations() error {
 	// Verify that fasta-idx is set if sort type is fastaidx
 	if bf.SortType == FidxST && bf.FastaIdx == "" {
 		return fmt.Errorf("--sort-type=%s must be used together with --fasta-idx", bf.SortType)
-	}
-	return nil
-}
-
-// Verify split size input
-func (bf Bedfile) verifySplitSizeInput() error {
-	if bf.SplitSize < 0 {
-		return fmt.Errorf("--split-size must be > 0: %d", bf.SplitSize)
 	}
 	return nil
 }
