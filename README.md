@@ -87,9 +87,6 @@ Order of actions ( \* = can be turned on/off using flags):
 4. sorting 
 5. writing output 
 
-
-
-
 | Arguments      |                                                                                                  |
 |----------------|--------------------------------------------------------------------------------------------------|
 | `<inputs> ...` | Bed file path(s). If more than one is provided the files will be joined as if they were one file |
