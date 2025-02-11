@@ -79,6 +79,16 @@ BedFusion supports three separate ways of configuration: flags, a configuration 
 2. configuration file 
 3. environmental variables
 
+Order of actions: 
+
+1. reading files 
+2. padding(*)
+3. merging(*)/deduplication(*)
+4. sorting 
+5. writing output 
+
+* = can be turned on/off using flags)
+
 
 | Arguments      |                                                                                                  |
 |----------------|--------------------------------------------------------------------------------------------------|
