@@ -1,0 +1,28 @@
+# Build on top of the prebuilt container
+FROM mcr.microsoft.com/devcontainers/go:dev-1.23-bookworm
+
+# Setup user
+ARG USERNAME=something
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG FULLNAME="Your full name"
+ARG MAIL="some@mail.address"
+
+# Create the user
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+USER ${USERNAME}
+ENV GOPATH="/home/${USERNAME}/go"
+ENV PATH=${PATH}:${GOPATH}/bin
+ENV LC_ALL en_US.UTF-8
+
+# Configure git
+RUN git config --global pull.rebase false && \
+    git config --global user.email "${MAIL}" && \
+    git config --global user.name "${FULLNAME}" && \
+    git config --global --add --bool push.autoSetupRemote true
