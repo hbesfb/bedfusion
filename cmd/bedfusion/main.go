@@ -18,11 +18,6 @@ func (s *session) Validate() error {
 	if err := s.Bedfile.VerifyAndHandle(); err != nil {
 		return err
 	}
-	// Give warnings about wrong unused variables if a
-	// config file is used
-	if s.ConfigFile != "" {
-		s.Bedfile.WarnAboutWrongUnusedVariables()
-	}
 	return nil
 }
 
@@ -32,7 +27,8 @@ func main() {
 	s.ctx = kong.Parse(&s,
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
 			"BedFusion follows the bed file standard outlined in: https://github.com/samtools/hts-specs/blob/94500cf76f049e898dec7af23097d877fde5894e/BEDv1.pdf \n\n"+
-			"Read priority order: 1. flags 2. configuration file 3. environmental variables"),
+			"Read priority order: 1. flags 2. configuration file 3. environmental variables \n\n"+
+			"Order of actions: 1. reading files 2. padding(*) 3. merging(*)/deduplication(*) 4. sorting 5. writing output (* = can be turned on/off using flags)"),
 		kong.Vars{
 			// Sorting types
 			"lexST":  bed.LexST,
@@ -66,10 +62,6 @@ func (s *session) run() (error, string) {
 			if err := s.Bedfile.PadLines(); err != nil {
 				return err, "while padding"
 			}
-		}
-		// Fission
-		if s.Bedfile.Fission {
-			s.Bedfile.SplitLines()
 		}
 		// Deduplicate
 		if s.Bedfile.Deduplicate {
