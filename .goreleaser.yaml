@@ -35,9 +35,13 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     # use zip for windows archives
+    files:
+    - docs/*
     format_overrides:
       - goos: windows
         format: zip
+
+
 
 dockers:
   - image_templates:
