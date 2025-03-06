@@ -36,8 +36,8 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     # use zip for windows archives
     files:
-    - LICENSE*
-    - README*
+    - LICENSE
+    - README.md
     - docs/*
     format_overrides:
       - goos: windows
