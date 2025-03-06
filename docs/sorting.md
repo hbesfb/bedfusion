@@ -115,7 +115,7 @@ Y       10      11      1       A
 
 Custom chromosome sorting lets you sort the chromosomes in any order that you would prefer.
 
-By default it will use human chromosome sorting (1-21, X, Y, MT), for example:
+By default it will use human chromosome sorting (1-22, X, Y, MT), for example:
 
 ``` shell
 > bedfusion examples/sort-test.bed --no-merge -s ccs
