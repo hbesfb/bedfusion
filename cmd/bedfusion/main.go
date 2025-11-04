@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"log"
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
@@ -26,6 +28,11 @@ func (s *session) Validate() error {
 
 func main() {
 	var s session
+	// Get version info
+	version, err := getVersion()
+	if err != nil {
+		log.Fatal(err)
+	}
 	// Getting variables
 	s.ctx = kong.Parse(&s,
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
@@ -33,7 +40,7 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables \n\n"+
 			"Order of actions: 1. reading files 2. padding(*) 3. merging(*)/deduplication(*) 4. sorting 5. writing output (* = can be turned on/off using flags)"),
 		kong.Vars{
-			"version": getVersion(),
+			"version": version,
 			// Sorting types
 			"lexST":  bed.LexST,
 			"natST":  bed.NatST,
@@ -51,12 +58,12 @@ func main() {
 }
 
 // Get version from build info
-func getVersion() string {
+func getVersion() (string, error) {
 	buildInfo, ok := debug.ReadBuildInfo()
 	if !ok || buildInfo.Main.Version == "" {
-		return "unknown"
+		return "", errors.New("unable to read version info")
 	}
-	return buildInfo.Main.Version
+	return buildInfo.Main.Version, nil
 }
 
 func (s *session) run() (error, string) {
