@@ -1,10 +1,6 @@
 package main
 
 import (
-	"errors"
-	"log"
-	"runtime/debug"
-
 	"github.com/alecthomas/kong"
 	kongyaml "github.com/alecthomas/kong-yaml"
 
@@ -26,13 +22,11 @@ func (s *session) Validate() error {
 	return nil
 }
 
+// Version is set during build time using -ldflags
+var version = "unknown"
+
 func main() {
 	var s session
-	// Get version info
-	version, err := getVersion()
-	if err != nil {
-		log.Fatal(err)
-	}
 	// Getting variables
 	s.ctx = kong.Parse(&s,
 		kong.Description("Another tool for sorting and merging bed files.\n\n"+
@@ -55,15 +49,6 @@ func main() {
 		kong.UsageOnError(),
 	)
 	s.ctx.FatalIfErrorf(s.run())
-}
-
-// Get version from build info
-func getVersion() (string, error) {
-	buildInfo, ok := debug.ReadBuildInfo()
-	if !ok || buildInfo.Main.Version == "" {
-		return "", errors.New("unable to read version info")
-	}
-	return buildInfo.Main.Version, nil
 }
 
 func (s *session) run() (error, string) {
