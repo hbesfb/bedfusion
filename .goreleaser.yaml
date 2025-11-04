@@ -43,8 +43,6 @@ archives:
       - goos: windows
         format: zip
 
-
-
 dockers:
   - image_templates:
       - "ghcr.io/hbesfb/bedfusion:{{ .Tag }}"
@@ -56,7 +54,6 @@ dockers:
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--platform=linux/arm64"
 
 changelog:
   sort: asc

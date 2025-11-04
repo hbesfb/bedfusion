@@ -8,8 +8,9 @@ import (
 )
 
 type session struct {
-	ConfigFile kong.ConfigFlag `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
-	Bedfile    bed.Bedfile     `embed:""`
+	Version    kong.VersionFlag `cmd:"" short:"v" help:"Print version information."`
+	ConfigFile kong.ConfigFlag  `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
+	Bedfile    bed.Bedfile      `embed:""`
 	ctx        *kong.Context
 }
 
@@ -21,6 +22,9 @@ func (s *session) Validate() error {
 	return nil
 }
 
+// Version is set during build time using -ldflags
+var version = "unknown"
+
 func main() {
 	var s session
 	// Getting variables
@@ -30,6 +34,7 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables \n\n"+
 			"Order of actions: 1. reading files 2. padding(*) 3. merging(*)/deduplication(*) 4. sorting 5. writing output (* = can be turned on/off using flags)"),
 		kong.Vars{
+			"version": version,
 			// Sorting types
 			"lexST":  bed.LexST,
 			"natST":  bed.NatST,
