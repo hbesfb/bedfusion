@@ -1,6 +1,8 @@
 package main
 
 import (
+	"runtime/debug"
+
 	"github.com/alecthomas/kong"
 	kongyaml "github.com/alecthomas/kong-yaml"
 
@@ -8,8 +10,9 @@ import (
 )
 
 type session struct {
-	ConfigFile kong.ConfigFlag `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
-	Bedfile    bed.Bedfile     `embed:""`
+	Version    kong.VersionFlag `cmd:"" short:"v" help:"Print version information."`
+	ConfigFile kong.ConfigFlag  `env:"CONFIG_FILE" short:"c" help:"The path to configuration file (must be in key-value yaml format)"`
+	Bedfile    bed.Bedfile      `embed:""`
 	ctx        *kong.Context
 }
 
@@ -30,6 +33,7 @@ func main() {
 			"Read priority order: 1. flags 2. configuration file 3. environmental variables \n\n"+
 			"Order of actions: 1. reading files 2. padding(*) 3. merging(*)/deduplication(*) 4. sorting 5. writing output (* = can be turned on/off using flags)"),
 		kong.Vars{
+			"version": getVersion(),
 			// Sorting types
 			"lexST":  bed.LexST,
 			"natST":  bed.NatST,
@@ -44,6 +48,15 @@ func main() {
 		kong.UsageOnError(),
 	)
 	s.ctx.FatalIfErrorf(s.run())
+}
+
+// Get version from build info
+func getVersion() string {
+	buildInfo, ok := debug.ReadBuildInfo()
+	if !ok || buildInfo.Main.Version == "" {
+		return "unknown"
+	}
+	return buildInfo.Main.Version
 }
 
 func (s *session) run() (error, string) {
