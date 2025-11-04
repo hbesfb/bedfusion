@@ -43,8 +43,6 @@ archives:
       - goos: windows
         format: zip
 
-
-
 dockers:
   - image_templates:
       - "ghcr.io/hbesfb/bedfusion:{{ .Tag }}"
